@@ -5,7 +5,7 @@ Plugin Name: CollabPress
 Plugin URI: http://wordpress.org/extend/plugins/collabpress/
 Description: CollabPress will add project management, collaboration and task features to a new or existing WordPress installation.
 Author: WebDevStudios
-Version: 0.1
+Version: 0.2
 Author URI: http://webdevstudios.com/
 */
 
@@ -17,7 +17,7 @@ if (!function_exists ('add_action')) {
 }
 
 // Define current version
-define( 'CP_VERSION', '0.1' );
+define( 'CP_VERSION', '0.2' );
 
 // Add "View CollabPress Dashboard" link on plugins page
 $cp_plugin = plugin_basename(__FILE__); 

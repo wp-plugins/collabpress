@@ -87,6 +87,7 @@ class cp_core_dashboard {
 		// Define some data can be given to each metabox during rendering
 		$data = array();
 		
+		// Delete Task
 		if(isset($_GET['delete-task']))
 		{
 			check_admin_referer('cp-action-delete_task');
@@ -99,6 +100,7 @@ class cp_core_dashboard {
 		<?php
 		}
 		
+		// Complete Task
 		if(isset($_GET['completed-task']))
 		{
 			check_admin_referer('cp-action-complete_task');
@@ -111,6 +113,7 @@ class cp_core_dashboard {
 		<?php
 		}
 		
+		// Uncomplete Task
 		if(isset($_GET['uncompleted-task']))
 		{
 			check_admin_referer('cp-action-uncomplete_task');
@@ -207,12 +210,12 @@ class cp_core_dashboard {
 	}
 	
 	function cp_oncontentbox_2_content($data) {
-		list_cp_my_tasks();
+		list_cp_my_tasks(NULL, CP_DASHBOARD_METABOX_PAGE_NAME);
 	}
 	
 	function cp_oncontentbox_additional_2_content($data) {
 		?>
-			<p><a target="_blank" href="http://webdevstudios.com/support/forum/collabpress/">CollabPress</a> v<?php echo CP_VERSION; ?> - <?php _e( 'Copyright', 'collabpress' ) ?> &copy; 2010 - <a href="http://webdevstudios.com/support/forum/collabpress/" target="_blank">Please Report Bugs</a> &middot; Follow us on Twitter: <a href="http://twitter.com/scottbasgaard" target="_blank">Scott</a> &middot; <a href="http://twitter.com/williamsba" target="_blank">Brad</a> &middot; <a href="http://twitter.com/webdevstudios" target="_blank">WDS</a></p>
+			<p class="cp_about"><a target="_blank" href="http://webdevstudios.com/support/forum/collabpress/">CollabPress</a> v<?php echo CP_VERSION; ?> - <?php _e( 'Copyright', 'collabpress' ) ?> &copy; 2010 - <a href="http://webdevstudios.com/support/forum/collabpress/" target="_blank">Please Report Bugs</a> &middot; Follow us on Twitter: <a href="http://twitter.com/scottbasgaard" target="_blank">Scott</a> &middot; <a href="http://twitter.com/williamsba" target="_blank">Brad</a> &middot; <a href="http://twitter.com/webdevstudios" target="_blank">WDS</a></p>
 		<?php
 	}
 	

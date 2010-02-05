@@ -119,9 +119,7 @@ class cp_core_projects {
 			
 		<?php
 		}
-		?>
-		
-		<?php
+
 		// Add Task
 		if ( isset($_POST['cp_add_task_button']) ) {
 			check_admin_referer('cp-add-task');
@@ -173,6 +171,46 @@ class cp_core_projects {
 			
 		<?php
 		}
+		
+		// Delete Task
+		if(isset($_GET['delete-task']))
+		{
+			check_admin_referer('cp-action-delete_task');
+			delete_cp_task($_GET['delete-task'], $_GET['task-title']);
+		?>
+			<div class="error">
+				<p><strong><?php _e( 'Task Deleted', 'collabpress' ); ?></strong></p>
+			</div>
+			
+		<?php
+		}
+		
+		// Complete Task
+		if(isset($_GET['completed-task']))
+		{
+			check_admin_referer('cp-action-complete_task');
+			update_cp_task($_GET['completed-task'], '1');	
+		?>
+			<div class="updated">
+				<p><strong><?php _e( 'Task Completed', 'collabpress' ); ?></strong></p>
+			</div>
+			
+		<?php
+		}
+		
+		// Uncomplete Task
+		if(isset($_GET['uncompleted-task']))
+		{
+			check_admin_referer('cp-action-uncomplete_task');
+			update_cp_task($_GET['uncompleted-task'], '0');	
+		?>
+			<div class="updated">
+				<p><strong><?php _e( 'Task Status Updated', 'collabpress' ); ?></strong></p>
+			</div>
+			
+		<?php
+		}
+		
 		?>
 		
 		<?php // screen_icon('options-general'); ?>
@@ -300,7 +338,7 @@ class cp_core_projects {
 		
 		$project_id = $_GET['project'];
 		
-		list_cp_tasks($project_id);
+		list_cp_tasks($project_id, CP_PROJECTS_METABOX_PAGE_NAME);
 	
 	}
 	

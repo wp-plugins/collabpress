@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: task, management, basecamp, to do, projects, planning, tracking, reporting
 Requires at least: 2.9
 Tested up to: 2.9.1
-Stable tag: 0.0.1.0
+Stable tag: 0.2.0.0
 
 Project management and task tracking software for WordPress and WPMU
 
@@ -28,6 +28,10 @@ Works with WordPress and WordPress MU 2.9.1
 3. Easily add a new task to any project created
 
 == Changelog ==
+
+= 0.2 =
+* Fixed PHP warning when loading My Tasks
+* When task is completed stay on project page
 
 = 0.1 =
 * First beta release

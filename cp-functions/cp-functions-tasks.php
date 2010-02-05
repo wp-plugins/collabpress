@@ -64,9 +64,20 @@ function get_cp_task_project_id($id) {
 }
 
 // List tasks
-function list_cp_tasks($project_id) {
+function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 	
 	global $wpdb, $current_user;
+	
+	// If $page_name
+	if ($page_name != NULL) {
+		
+		$cp_list_tasks_view = $_GET['view'];
+	
+		$cp_list_tasks_project = $_GET['project'];
+		
+		$page_name .= '&view=' . $cp_list_tasks_view . '&project=' . $cp_list_tasks_project;
+		
+	}
 	
 	$table_name = $wpdb->prefix . "cp_tasks";
 	
@@ -112,13 +123,13 @@ function list_cp_tasks($project_id) {
 			
 				if ($cp_list_my_task->status != 1) {
 			
-					$link = 'admin.php?page=cp-dashboard-page&completed-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&completed-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-complete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
 				} else {
 					// This should never get executed / remove in future version
-					$link = 'admin.php?page=cp-dashboard-page&uncompleted-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -137,7 +148,7 @@ function list_cp_tasks($project_id) {
 					echo '</span>';
 				}
 			
-				$link = 'admin.php?page=cp-dashboard-page&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
+				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
 				echo '<a href="'.$link.'">delete</a></p>';
@@ -194,11 +205,11 @@ function list_cp_tasks($project_id) {
 			
 				if ($cp_completed_task->status != 1) {
 					// This should never get executed - remove in future version
-					?><p><input onclick="window.location='admin.php?page=cp-dashboard-page&completed-task=<?php echo $cp_completed_task->id; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+					?><p><input onclick="window.location='admin.php?page=<?php echo $page_name; ?>&completed-task=<?php echo $cp_completed_task->id; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
 				} else {
 						
-					$link = 'admin.php?page=cp-dashboard-page&uncompleted-task=' .$cp_completed_task->id;
+					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_completed_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -217,7 +228,7 @@ function list_cp_tasks($project_id) {
 					echo '</span>';
 				}
 			
-				$link = 'admin.php?page=cp-dashboard-page&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
+				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
 				echo '<a href="'.$link.'">delete</a></p>';
@@ -250,7 +261,7 @@ function list_cp_tasks($project_id) {
 }
 
 // List current user's tasks
-function list_cp_my_tasks($project_id) {
+function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 	
 	global $wpdb, $current_user;
 	
@@ -290,13 +301,13 @@ function list_cp_my_tasks($project_id) {
 			
 				if ($cp_list_my_task->status != 1) {
 			
-					$link = 'admin.php?page=cp-dashboard-page&completed-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&completed-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-complete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
 				} else {
 					// This should never get executed / remove in future version
-					$link = 'admin.php?page=cp-dashboard-page&uncompleted-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -315,7 +326,7 @@ function list_cp_my_tasks($project_id) {
 					echo '</span>';
 				}
 			
-				$link = 'admin.php?page=cp-dashboard-page&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
+				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
 				echo '<a href="'.$link.'">delete</a></p>';
@@ -363,11 +374,11 @@ function list_cp_my_tasks($project_id) {
 			
 				if ($cp_completed_task->status != 1) {
 					// This should never get executed - remove in future version
-					?><p><input onclick="window.location='admin.php?page=cp-dashboard-page&completed-task=<?php echo $cp_completed_task->id; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+					?><p><input onclick="window.location='admin.php?page=<?php echo $page_name; ?>&completed-task=<?php echo $cp_completed_task->id; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
 				} else {
 						
-					$link = 'admin.php?page=cp-dashboard-page&uncompleted-task=' .$cp_completed_task->id;
+					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_completed_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -386,7 +397,7 @@ function list_cp_my_tasks($project_id) {
 					echo '</span>';
 				}
 			
-				$link = 'admin.php?page=cp-dashboard-page&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
+				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
 				echo '<a href="'.$link.'">delete</a></p>';
