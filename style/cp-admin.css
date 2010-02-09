@@ -18,6 +18,7 @@
 	height: auto;
 	border-bottom: 1px solid #F0F0F0;
 	margin-bottom: 6px;
+    word-wrap:break-word;
 }
 
 .cp_about {

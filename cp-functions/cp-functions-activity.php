@@ -52,8 +52,13 @@ function list_cp_activity() {
 			// Default Gravatar
 			$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
 			
+			// User link
+			echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
+			
 			// Get Gravatar
 			echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+			
+			echo '</a>';
 		
 			echo '</div>';
 			
@@ -80,14 +85,14 @@ function list_cp_activity() {
 			
 				echo '<p><strong>Project: ' . $task_project_title . ' </strong>';
 				
-				echo '<p><strong>Summary: </strong><a href="#">' . $user_info->user_nicename . '</a></strong> <span style="color:'.$activity_color.';">' . $cp_list_activity->action . '</span> new ' . $cp_list_activity->type . ' "<a href="admin.php?page=cp-projects-page&view=project&project='.$task_project_id.'">' . $cp_list_activity->title . '</a>".</p>';
+				echo '<p><strong>Summary: </strong><a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">' . $user_info->user_nicename . '</a></strong> <span style="color:'.$activity_color.';">' . $cp_list_activity->action . '</span> new ' . $cp_list_activity->type . ' "<a href="admin.php?page=cp-projects-page&view=project&project='.$task_project_id.'">' . $cp_list_activity->title . '</a>".</p>';
 			
 			// If this is a project
 			} else if ($cp_list_activity->type == 'project' && $cp_list_activity->cp_id != 0) {
 			
 				$activity_project_id = $cp_list_activity->cp_id;
 			
-				echo '<p><strong>Summary: </strong><a href="#">' . $user_info->user_nicename . '</a></strong> <span style="color:'.$activity_color.';">' . $cp_list_activity->action . '</span> new ' . $cp_list_activity->type . ' "<a href="admin.php?page=cp-projects-page&view=project&project='.$activity_project_id.'">' . $cp_list_activity->title . '</a>".</p>';
+				echo '<p><strong>Summary: </strong><a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">' . $user_info->user_nicename . '</a></strong> <span style="color:'.$activity_color.';">' . $cp_list_activity->action . '</span> new ' . $cp_list_activity->type . ' "<a href="admin.php?page=cp-projects-page&view=project&project='.$activity_project_id.'">' . $cp_list_activity->title . '</a>".</p>';
 			
 			// If it's neither then it's been deleted and don't display link
 			} else {
@@ -100,7 +105,7 @@ function list_cp_activity() {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="#">' . __('View More', 'collabpress') . '</a></p>';	
+		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allactivity">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 	

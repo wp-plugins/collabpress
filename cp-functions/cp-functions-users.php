@@ -29,15 +29,25 @@ function list_cp_users() {
 			// Default gravatar
 			$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
 			
+			// User link
+			echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
+			
 			// Get gravatar
 			echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+			
+			echo '</a>';
 			
 			echo '</div>';
 			
 			echo '<div id="cp-task-summary">';
 			
+			// User link
+			echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
+			
 			// Display username
 			echo '<p><strong>' . $user_info->user_nicename . '</strong></p>';
+			
+			echo '</a>';
 			
 			echo '</div>';
 			

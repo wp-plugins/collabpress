@@ -12,7 +12,7 @@ function insert_cp_task() {
 }
 
 // Delete a task
-function delete_cp_task($task, $title) {
+function delete_cp_task($task, $title = NULL) {
 	
 	global $wpdb, $current_user;
 	
@@ -24,7 +24,7 @@ function delete_cp_task($task, $title) {
 	$wpdb->query("
 	DELETE FROM $table_name WHERE id = $task");
 	
-	insert_cp_activity($cp_auth, $cp_date, 'deleted', $title, 'task');
+	insert_cp_activity($cp_auth, $cp_date, 'deleted', $title, 'task', NULL);
 	
 }
 
@@ -250,7 +250,7 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="#">' . __('View More', 'collabpress') . '</a></p>';	
+		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=alltasks">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 		
@@ -291,9 +291,14 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 			
 				// Default gravatar
 				$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
+				
+				// User link
+				echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
 			
 				// Get gravatar
 				echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+				
+				echo '</a>';
 			
 				echo '</div>';
 			
@@ -331,10 +336,17 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				
 				echo '<a href="'.$link.'">delete</a></p>';
 				
+				// Display project title
+				if ($cp_list_my_task->proj_id) {
+					
+					echo '<p><strong>' . __('Project:', 'collabpress') . '</strong> ' . get_cp_project_title($cp_list_my_task->proj_id) . '</p>';
+				
+				}
+				
 				// If there is a description
 				if ($cp_list_my_task->details) {
 					
-					echo '<p><strong>Description:</strong> ' . $cp_list_my_task->details . '</p>';
+					echo '<p><strong>' . __('Description:', 'collabpress') . '</strong> ' . $cp_list_my_task->details . '</p>';
 				
 				}
 				
@@ -364,9 +376,14 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 			
 				// Default gravatar
 				$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
+				
+				// User link
+				echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
 			
 				// Get gravatar
 				echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+				
+				echo '</a>';
 			
 				echo '</div>';
 			
@@ -402,11 +419,18 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				
 				echo '<a href="'.$link.'">delete</a></p>';
 				
+				// Display project title
+				if ($cp_list_my_task->proj_id) {
+					
+					echo '<p><strong>' . __('Project:', 'collabpress') . '</strong> ' . get_cp_project_title($cp_list_my_task->proj_id) . '</p>';
+				
+				}
+				
 				// If there is a description
 				if ($cp_list_my_task->details) {
 					
-					echo '<p><strong>Description:</strong> ' . $cp_list_my_task->details . '</p>';
-					
+					echo '<p><strong>' . __('Description:', 'collabpress') . '</strong> ' . $cp_list_my_task->details . '</p>';
+				
 				}
 				
 				$my_task_count++;
@@ -419,7 +443,192 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="#">' . __('View More', 'collabpress') . '</a></p>';	
+		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
+	
+	} else {
+		
+		echo '<p>No tasks</p>';
+		
+	}
+	
+}
+
+// List tasks by user id
+function list_cp_users_tasks($userid, $page_name) {
+	
+	global $wpdb;
+	
+	$table_name = $wpdb->prefix . "cp_tasks";
+	
+		$cp_list_my_tasks = $wpdb->get_results("SELECT * FROM $table_name WHERE users = $userid");
+	
+	if ($cp_list_my_tasks) {
+		
+		foreach ($cp_list_my_tasks as $cp_list_my_task) {
+			
+			$user_info = get_userdata($userid);
+			
+			if ($cp_list_my_task->status != 1) {
+				
+				echo '<div style="height:auto">';
+			
+				echo '<div id="cp-gravatar" style="height:62px;width:62px;background:#F0F0F0;">';
+			
+				// Default gravatar
+				$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
+				
+				// User link
+				echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
+			
+				// Get gravatar
+				echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+				
+				echo '</a>';
+			
+				echo '</div>';
+			
+				echo '<div id="cp-task-summary">';
+			
+				if ($cp_list_my_task->status != 1) {
+			
+					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&completed-task=' .$cp_list_my_task->id;
+					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-complete_task') : $link;
+					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+				
+				} else {
+					// This should never get executed / remove in future version
+					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&uncompleted-task=' .$cp_list_my_task->id;
+					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
+					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+				
+				}
+			
+				if ($cp_list_my_task->status == 1) {
+				
+					echo ' <span style="text-decoration:line-through">';
+				
+				}
+			
+				echo "<strong>". $cp_list_my_task->title . "</strong>";
+				echo " <code>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
+			
+				if ($cp_list_my_task->status == 1) {
+					echo '</span>';
+				}
+			
+				$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
+				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
+				
+				echo '<a href="'.$link.'">delete</a></p>';
+				
+				// Display project title
+				if ($cp_list_my_task->proj_id) {
+					
+					echo '<p><strong>' . __('Project:', 'collabpress') . '</strong> ' . get_cp_project_title($cp_list_my_task->proj_id) . '</p>';
+				
+				}
+				
+				// If there is a description
+				if ($cp_list_my_task->details) {
+					
+					echo '<p><strong>' . __('Description:', 'collabpress') . '</strong> ' . $cp_list_my_task->details . '</p>';
+				
+				}
+				
+				$my_task_count++;
+				
+				echo '</div>';
+				
+				echo '</div>';
+				
+			} else {
+				
+				$cp_completed_tasks[] = $cp_list_my_task;
+				
+			}
+			
+		}
+		
+		if ($cp_completed_tasks) {
+			
+			foreach ($cp_completed_tasks as $cp_completed_task) {
+				
+				$user_info = get_userdata($cp_completed_task->users);
+				
+				echo '<div style="height:auto">';
+				
+				echo '<div id="cp-gravatar" style="height:62px;width:62px;background:#F0F0F0;">';
+			
+				// Default gravatar
+				$def_gravatar = "http://www.gravatar.com/avatar/c11f04eee71dfd0f49132786c34ea4ff?s=50&d=&r=G&forcedefault=1";
+				
+				// User link
+				echo '<a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">';
+			
+				// Get gravatar
+				echo get_avatar( $user_info->user_email, $size = '50', $default = $def_gravatar );
+				
+				echo '</a>';
+			
+				echo '</div>';
+			
+				echo '<div style="background:#eeeeee" id="cp-task-summary">';
+			
+				if ($cp_completed_task->status != 1) {
+					// This should never get executed - remove in future version
+					?><p><input onclick="window.location='admin.php?page=<?php echo $page_name; ?>view=userpage&user=<?php echo $user_info->ID; ?>&completed-task=<?php echo $cp_completed_task->id; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+				
+				} else {
+						
+					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&uncompleted-task=' .$cp_completed_task->id;
+					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
+					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
+				
+				}
+			
+				if ($cp_completed_task->status == 1) {
+				
+					echo ' <span style="text-decoration:line-through">';
+				
+				}
+			
+				echo "<strong>". $cp_completed_task->title . "</strong>";
+				echo " <code>" . __('Due', 'collabpress') . ": " . $cp_completed_task->due_date . "</code>";
+			
+				if ($cp_completed_task->status == 1) {
+					echo '</span>';
+				}
+			
+				$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
+				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
+				
+				echo '<a href="'.$link.'">delete</a></p>';
+				
+				// Display project title
+				if ($cp_list_my_task->proj_id) {
+					
+					echo '<p><strong>' . __('Project:', 'collabpress') . '</strong> ' . get_cp_project_title($cp_list_my_task->proj_id) . '</p>';
+				
+				}
+				
+				// If there is a description
+				if ($cp_list_my_task->details) {
+					
+					echo '<p><strong>' . __('Description:', 'collabpress') . '</strong> ' . $cp_list_my_task->details . '</p>';
+				
+				}
+				
+				$my_task_count++;
+				
+				echo '</div>';
+				
+				echo '</div>';
+
+			}
+			
+		}
+		
+		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 		

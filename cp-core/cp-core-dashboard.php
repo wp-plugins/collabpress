@@ -63,73 +63,56 @@ class cp_core_dashboard {
 		add_meta_box('cp-dashboard-metaboxes-sidebox-1', __( 'Calendar', 'collabpress' ), array(&$this, 'cp_onsidebox_1_content'), $this->pagehook, 'side', 'core');
 		add_meta_box('cp-dashboard-metaboxes-sidebox-2', __( 'Projects', 'collabpress' ), array(&$this, 'cp_onsidebox_2_content'), $this->pagehook, 'side', 'core');
 		add_meta_box('cp-dashboard-metaboxes-sidebox-3', __( 'Users', 'collabpress' ), array(&$this, 'cp_onsidebox_3_content'), $this->pagehook, 'side', 'core');
-		add_meta_box('cp-dashboard-metaboxes-contentbox-1', __( 'Recent Activity', 'collabpress' ), array(&$this, 'cp_oncontentbox_1_content'), $this->pagehook, 'normal', 'core');
-		add_meta_box('cp-dashboard-metaboxes-contentbox-2', __( 'My Tasks', 'collabpress' ), array(&$this, 'cp_oncontentbox_2_content'), $this->pagehook, 'normal', 'core');
-		add_meta_box('cp-dashboard-metaboxes-contentbox-additional-2', __( 'About', 'collabpress' ), array(&$this, 'cp_oncontentbox_additional_2_content'), $this->pagehook, 'additional', 'core');
+		
+		// Toggle dashboard view
+		if ($_GET['view'] == 'allactivity') {
+			
+			add_meta_box('cp-dashboard-metaboxes-contentbox-3', __( 'Activity', 'collabpress' ), array(&$this, 'cp_oncontentbox_3_content'), $this->pagehook, 'normal', 'core');
+			
+		} else if ($_GET['view'] == 'allmytasks') {
+			
+			add_meta_box('cp-dashboard-metaboxes-contentbox-4', __( 'My Tasks', 'collabpress' ), array(&$this, 'cp_oncontentbox_4_content'), $this->pagehook, 'normal', 'core');
+			
+			} else if ($_GET['view'] == 'alltasks') {
+				
+				add_meta_box('cp-dashboard-metaboxes-contentbox-5', __( 'Tasks', 'collabpress' ), array(&$this, 'cp_oncontentbox_5_content'), $this->pagehook, 'normal', 'core');
+				
+				} else if ($_GET['view'] == 'userpage') {
+					
+					$user_info = get_userdata($_GET['user']);
+
+					add_meta_box('cp-dashboard-metaboxes-contentbox-6', 'Tasks for ' . $user_info->user_nicename, array(&$this, 'cp_oncontentbox_6_content'), $this->pagehook, 'normal', 'core');
+					
+					} else {
+			
+					add_meta_box('cp-dashboard-metaboxes-contentbox-1', __( 'Recent Activity', 'collabpress' ), array(&$this, 'cp_oncontentbox_1_content'), $this->pagehook, 'normal', 'core');
+					add_meta_box('cp-dashboard-metaboxes-contentbox-2', __( 'My Tasks', 'collabpress' ), array(&$this, 'cp_oncontentbox_2_content'), $this->pagehook, 'normal', 'core');
+					add_meta_box('cp-dashboard-metaboxes-contentbox-additional-2', __( 'About', 'collabpress' ), array(&$this, 'cp_oncontentbox_additional_2_content'), $this->pagehook, 'additional', 'core');
+			
+		}
 		
 	}
 	
 	// Executed to show the plugins complete admin page
 	function cp_onshow_page() {
 		
-		// Check if there are any projects
-		if (!check_cp_project()) {
-			?>
-			<div class="updated">
-				<p><strong><?php _e( 'Welcome to CollabPress! To create your first project click <a href="admin.php?page=cp-projects-page">here</a>.', 'collabpress' ); ?></strong></p>
-			</div>
-			<?php
-		}
 		
 		// We need the global screen column value to beable to have a sidebar in WordPress 2.8
 		global $screen_layout_columns;
 		
+		require ( CP_PLUGIN_DIR . '/cp-core/cp-core-isset.php' );
+		
 		// Define some data can be given to each metabox during rendering
 		$data = array();
 		
-		// Delete Task
-		if(isset($_GET['delete-task']))
-		{
-			check_admin_referer('cp-action-delete_task');
-			delete_cp_task($_GET['delete-task'], $_GET['task-title']);
-		?>
-			<div class="error">
-				<p><strong><?php _e( 'Task Deleted', 'collabpress' ); ?></strong></p>
-			</div>
-			
-		<?php
-		}
-		
-		// Complete Task
-		if(isset($_GET['completed-task']))
-		{
-			check_admin_referer('cp-action-complete_task');
-			update_cp_task($_GET['completed-task'], '1');	
-		?>
-			<div class="updated">
-				<p><strong><?php _e( 'Task Completed', 'collabpress' ); ?></strong></p>
-			</div>
-			
-		<?php
-		}
-		
-		// Uncomplete Task
-		if(isset($_GET['uncompleted-task']))
-		{
-			check_admin_referer('cp-action-uncomplete_task');
-			update_cp_task($_GET['uncompleted-task'], '0');	
-		?>
-			<div class="updated">
-				<p><strong><?php _e( 'Task Status Updated', 'collabpress' ); ?></strong></p>
-			</div>
-			
-		<?php
-		}
 		?>
 
 		<div id="cp-dashboard-metaboxes-general" class="wrap">
+		
 		<?php // screen_icon('options-general'); ?>
+		
 		<h2>CollabPress - <?php _e( 'Dashboard', 'collabpress' ) ?></h2>
+		
 		<form action="admin-post.php" method="post">
 			<?php wp_nonce_field('cp-dashboard-metaboxes-general'); ?>
 			<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
@@ -211,6 +194,22 @@ class cp_core_dashboard {
 	
 	function cp_oncontentbox_2_content($data) {
 		list_cp_my_tasks(NULL, CP_DASHBOARD_METABOX_PAGE_NAME);
+	}
+	
+	function cp_oncontentbox_3_content($data) {
+		list_cp_activity();
+	}
+	
+	function cp_oncontentbox_4_content($data) {
+		list_cp_my_tasks(NULL, CP_DASHBOARD_METABOX_PAGE_NAME);
+	}
+	
+	function cp_oncontentbox_5_content($data) {
+		list_cp_tasks(NULL, CP_DASHBOARD_METABOX_PAGE_NAME);
+	}
+	
+	function cp_oncontentbox_6_content($data) {
+		list_cp_users_tasks($_GET['user'], CP_DASHBOARD_METABOX_PAGE_NAME);
 	}
 	
 	function cp_oncontentbox_additional_2_content($data) {

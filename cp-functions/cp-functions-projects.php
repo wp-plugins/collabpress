@@ -12,7 +12,23 @@ function insert_cp_project() {
 }
 
 // Delete a project
-function delete_cp_project() {	
+function delete_cp_project($project_id) {	
+	global $wpdb, $current_user;
+	
+	$cp_auth = $current_user->ID;
+	$cp_date =  date("Y-m-d H:m:s");
+	$title = get_cp_project_title($project_id);
+
+	//delete project
+	$table_name = $wpdb->prefix . "cp_projects";
+	$wpdb->query("DELETE FROM $table_name WHERE id = $project_id");
+	
+	//delete all tasks for project
+	$table_name = $wpdb->prefix . "cp_tasks";
+	$wpdb->query("DELETE FROM $table_name WHERE proj_id = $project_id");
+
+	insert_cp_activity($cp_auth, $cp_date, 'deleted', $title, 'project', NULL);
+	
 }
 
 // Get project id by title
@@ -48,6 +64,27 @@ function get_cp_project_title($id) {
 	if ($cp_get_project_title) {
 	
 		return $cp_get_project_title;
+		
+	} else {
+		
+		return false;
+	
+	}
+	
+}
+
+// Get project details by id
+function get_cp_project_details($id) {
+	
+	global $wpdb;
+	
+	$table_name = $wpdb->prefix . "cp_projects";
+	
+	$cp_get_project_details = $wpdb->get_var("SELECT DISTINCT details FROM " . $table_name . " WHERE id = '".$id."'");
+	
+	if ($cp_get_project_details) {
+	
+		return $cp_get_project_details;
 		
 	} else {
 		
