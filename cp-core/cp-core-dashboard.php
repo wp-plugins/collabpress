@@ -42,9 +42,9 @@ class cp_core_dashboard {
 	function cp_onadmin_menu() {
 		
 		// Add our own options page
-		$this->pagehook = add_menu_page('CollabPress - Project, Collaboration and Task Management', "CollabPress", 'manage_options', CP_DASHBOARD_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
+		$this->pagehook = add_menu_page('CollabPress - Project, Collaboration and Task Management', "CollabPress", CP_MINIMUM_USER, CP_DASHBOARD_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
 		
-		add_submenu_page( CP_DASHBOARD_METABOX_PAGE_NAME, 'CollabPress - Project, Collaboration and Task Management', "Dashboard", 'manage_options', CP_DASHBOARD_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
+		add_submenu_page( CP_DASHBOARD_METABOX_PAGE_NAME, 'CollabPress - Project, Collaboration and Task Management', "Dashboard", CP_MINIMUM_USER, CP_DASHBOARD_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
 		
 		// Register callback gets call prior your own page gets rendered
 		add_action('load-'.$this->pagehook, array(&$this, 'cp_onload_page'));
@@ -100,6 +100,15 @@ class cp_core_dashboard {
 		// We need the global screen column value to beable to have a sidebar in WordPress 2.8
 		global $screen_layout_columns;
 		
+		// Check if there are any projects
+		if (!check_cp_project()) {
+			?>
+			<div class="updated">
+				<p><strong><?php _e( 'Welcome to CollabPress. To get started create your first <a href="admin.php?page=cp-projects-page">project</a>.', 'collabpress' ); ?></strong></p>
+			</div>
+			<?php
+		}
+		
 		require ( CP_PLUGIN_DIR . '/cp-core/cp-core-isset.php' );
 		
 		// Define some data can be given to each metabox during rendering
@@ -111,7 +120,7 @@ class cp_core_dashboard {
 		
 		<?php // screen_icon('options-general'); ?>
 		
-		<h2>CollabPress - <?php _e( 'Dashboard', 'collabpress' ) ?></h2>
+		<p><h2>CollabPress<?php if ($_GET['view']) { echo ' - <a href="admin.php?page=cp-dashboard-page">'.__('Back', 'collabpress').'</a>';}?></h2></p>
 		
 		<form action="admin-post.php" method="post">
 			<?php wp_nonce_field('cp-dashboard-metaboxes-general'); ?>
@@ -158,7 +167,7 @@ class cp_core_dashboard {
 	function cp_onsave_changes() {
 		
 		// User permission check
-		if ( !current_user_can('manage_options') )
+		if ( !current_user_can(CP_MINIMUM_USER) )
 			wp_die( __('Cheatin&#8217; uh?', 'collabpress') );	
 					
 		// Cross check the given referer.
@@ -197,7 +206,7 @@ class cp_core_dashboard {
 	}
 	
 	function cp_oncontentbox_3_content($data) {
-		list_cp_activity();
+		list_cp_activity($view_more = 1);
 	}
 	
 	function cp_oncontentbox_4_content($data) {

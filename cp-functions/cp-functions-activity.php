@@ -33,13 +33,17 @@ function delete_cp_activity() {
 }
 
 // List activities
-function list_cp_activity() {
+function list_cp_activity($view_more = NULL) {
 
 	global $wpdb;
 	
 	$table_name = $wpdb->prefix . "cp_activity";
 	
-	$cp_list_activities = $wpdb->get_results("SELECT * FROM $table_name WHERE 1 ORDER BY id DESC LIMIT 0,4");
+	if ($view_more) {
+		$cp_list_activities = $wpdb->get_results("SELECT * FROM $table_name WHERE 1 ORDER BY id DESC LIMIT 0,20");
+	} else {
+		$cp_list_activities = $wpdb->get_results("SELECT * FROM $table_name WHERE 1 ORDER BY id DESC LIMIT 0,4");
+	}
 	
 	if ($cp_list_activities) {
 	
@@ -62,28 +66,30 @@ function list_cp_activity() {
 		
 			echo '</div>';
 			
-			if ($cp_list_activity->action == 'created' || $cp_list_activity->action == 'added') {
+			if ($cp_list_activity->action == 'created' || $cp_list_activity->action == 'added' || $cp_list_activity->action == 'completed') {
 				$activity_color = 'green';
 			} else if ($cp_list_activity->action == 'edited') {
 				$activity_color = 'yellow';
-			} else if ($cp_list_activity->action == 'deleted'){
+			} else if ($cp_list_activity->action == 'deleted') {
 				$activity_color = 'red';
+			} else if ($cp_list_activity->action == 'reopened') {
+				$activity_color = 'orange';
 			} else {
 				$activity_color = 'black';
 			}
 			
 			echo '<div id="cp-task-summary">';
 		
-			echo '<p><strong>Date: ' . $cp_list_activity->date . '</p>';
+			echo '<p><strong>Date:</strong> ' . $cp_list_activity->date . '</p>';
 			
 			// If this is a task
-			if ($cp_list_activity->type == 'task' && $cp_list_activity->cp_id != 0 ) {
+			if ($cp_list_activity->type == 'task' || $cp_list_activity->type == 'completed' || $cp_list_activity->type == 'reopened' && $cp_list_activity->cp_id != 0 ) {
 			
 				$task_project_id =  get_cp_task_project_id($cp_list_activity->cp_id);
 
 				$task_project_title =  get_cp_project_title($task_project_id);
 			
-				echo '<p><strong>Project: ' . $task_project_title . ' </strong>';
+				echo '<p><strong>Project:</strong> ' . $task_project_title;
 				
 				echo '<p><strong>Summary: </strong><a href="admin.php?page=cp-dashboard-page&view=userpage&user=' . $user_info->ID . '">' . $user_info->user_nicename . '</a></strong> <span style="color:'.$activity_color.';">' . $cp_list_activity->action . '</span> new ' . $cp_list_activity->type . ' "<a href="admin.php?page=cp-projects-page&view=project&project='.$task_project_id.'">' . $cp_list_activity->title . '</a>".</p>';
 			
@@ -105,7 +111,15 @@ function list_cp_activity() {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allactivity">' . __('View More', 'collabpress') . '</a></p>';	
+		if (!$view_more) {
+		
+			echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allactivity">' . __('View More', 'collabpress') . '</a></p>';	
+		
+		} else {
+		
+			echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page">' . __('Back', 'collabpress') . '</a></p>';
+		
+		}
 	
 	} else {
 	

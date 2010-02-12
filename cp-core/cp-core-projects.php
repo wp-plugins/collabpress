@@ -42,7 +42,7 @@ class cp_core_projects {
 	function cp_onadmin_menu() {
 		
 		// Add our own option page, you can also add it to different sections or use your own one
-		$this->pagehook = add_submenu_page(CP_DASHBOARD_METABOX_PAGE_NAME, 'CollabPress - Projects', "Projects", 'manage_options', CP_PROJECTS_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
+		$this->pagehook = add_submenu_page(CP_DASHBOARD_METABOX_PAGE_NAME, 'CollabPress - Projects', "Projects", CP_MINIMUM_USER, CP_PROJECTS_METABOX_PAGE_NAME, array(&$this, 'cp_onshow_page'));
 		
 		// Register callback gets call prior your own page gets rendered
 		add_action('load-'.$this->pagehook, array(&$this, 'cp_onload_page'));
@@ -61,14 +61,18 @@ class cp_core_projects {
 		add_meta_box('cp-projects-metaboxes-sidebox-2', __( 'Projects', 'collabpress' ), array(&$this, 'cp_projects_onsidebox_2_content'), $this->pagehook, 'side', 'core');
 		add_meta_box('cp-projects-metaboxes-sidebox-3', __( 'Users', 'collabpress' ), array(&$this, 'cp_projects_onsidebox_3_content'), $this->pagehook, 'side', 'core');
 		
-		if ($_GET['view'] != 'project') {
-
-			// Add several metaboxes now, all metaboxes registered during load page can be switched off/on at "Screen Options" automatically, nothing special to do therefore
-			add_meta_box('cp-projects-metaboxes-contentbox-1', 'Create New Project', array(&$this, 'cp_oncontentbox_1_content'), $this->pagehook, 'normal', 'core');
+		if ($_GET['view'] == 'project') {
 			
-		} else {
 			add_meta_box('cp-projects-metaboxes-contentbox-2', 'Tasks', array(&$this, 'cp_oncontentbox_2_content'), $this->pagehook, 'normal', 'core');
 			add_meta_box('cp-projects-metaboxes-contentbox-3', 'Add A New Task', array(&$this, 'cp_oncontentbox_3_content'), $this->pagehook, 'normal', 'core');
+			
+		} else if ($_GET['view'] == 'edit-project') {
+		
+			add_meta_box('cp-projects-metaboxes-contentbox-4', 'Edit Project', array(&$this, 'cp_oncontentbox_4_content'), $this->pagehook, 'normal', 'core');
+		
+		} else  {
+			
+			add_meta_box('cp-projects-metaboxes-contentbox-1', 'Create New Project', array(&$this, 'cp_oncontentbox_1_content'), $this->pagehook, 'normal', 'core');
 			
 		}
 		
@@ -102,19 +106,21 @@ class cp_core_projects {
 		
 		?>
 		
-		<?php if($cp_project_title) { ?>
+		<?php if($cp_project_title && $_GET['view'] != 'edit-project') { ?>
         	<?php
 			$link = 'admin.php?page=cp-dashboard-page&delete-project='.esc_html($_GET['project']).'&project='.esc_html($_GET['project']);
 			$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_project') : $link;
 			?>
-			<h2>Project: <?php echo $cp_project_title; ?>  - <a href="<?php echo $link; ?>" onclick="javascript:check=confirm('<?php _e('WARNING: This will delete this project and all project tasks.\n\nChoose [Cancel] to Stop, [OK] to delete.\n'); ?>');if(check==false) return false;"><?php _e('delete project', 'collabpress'); ?></a></h2>
+			<p><h2><?php echo $cp_project_title; ?>  - <a href="admin.php?page=cp-projects-page&view=edit-project&project=<?php echo esc_html($_GET['project']); ?>"><?php _e('edit', 'collabpress'); ?></a> <a style="color:#D54E21" href="<?php echo $link; ?>" onclick="javascript:check=confirm('<?php _e('WARNING: This will delete this project and all project tasks.\n\nChoose [Cancel] to Stop, [OK] to delete.\n'); ?>');if(check==false) return false;"><?php _e('delete', 'collabpress'); ?></a></h2></p>
 			
 			<?php if($cp_project_details) { ?>
 				<p><strong><?php _e('Description: ', 'collabpress'); ?></strong><?php echo $cp_project_details; ?></p>
 			<?php } ?>
-			
+		
+		<?php } else if($_GET['view'] == 'edit-project') { ?>
+			<p><h2>Edit Project</h2></p>
 		<?php } else { ?>
-			<h2>Add New Project</h2>
+			<p><h2>Create New Project</h2></p>
 		<?php } ?>
 		
 		
@@ -168,7 +174,7 @@ class cp_core_projects {
 	function cp_onsave_changes() {
 		
 		// User permission check
-		if ( !current_user_can('manage_options') )
+		if ( !current_user_can(CP_MINIMUM_USER) )
 			wp_die( __('Cheatin&#8217; uh?', 'collabpress') );		
 				
 		// Cross check the given referer.
@@ -332,6 +338,48 @@ class cp_core_projects {
 		
 		</form>
 	<?php
+	}
+	
+	function cp_oncontentbox_4_content($data) {
+		
+			if (check_cp_project_exists(esc_html($_GET['project']))) {
+			
+			// Get Edit Project Title
+			$cp_edit_project_title = get_cp_project_title(esc_html($_GET['project']));
+			// Get Edit Project Description
+			$cp_edit_project_details = get_cp_project_details(esc_html($_GET['project']));
+			
+	?>
+			<form method="post" action="">
+			<?php wp_nonce_field('cp-edit-project'); ?>
+
+			<table class="form-table">
+			<tr class="form-field form-required">
+			<th scope="row"><label for="cp_edit_project_title"><?php _e('Title', 'collabpress'); ?> <span class="description"><?php _e('(required)', 'collabpress'); ?></span></label></th>
+			<td><input name="cp_edit_project_title" type="text" id="cp_edit_project_title" value="<?php echo $cp_edit_project_title; ?>" aria-required="true" /></td>
+			</tr>
+			<tr class="form-field">
+			<th scope="row"><label for="cp_edit_project_details"><?php _e('Details', 'collabpress'); ?></label></th>
+			<td><input name="cp_edit_project_details" type="text" id="cp_edit_project_details" value="<?php echo $cp_edit_project_details; ?>" /></td>
+			</tr>			
+			</table>
+
+			<input type="hidden" name="cp_edit_project_id" value="<?php echo esc_html($_GET['project']); ?>">
+			<input type="hidden" name="edit_project_options" value="cp_edit_project_title, cp_edit_project_details" />
+
+			<p>
+			<input type="submit" class="button-primary" name="cp_edit_project_submit" value="<?php _e('Edit Project', 'collabpress') ?>" />
+			</p>
+
+			</form>
+	<?php
+	
+		} else {
+			
+			echo "Project doesn't exist...";
+			
+		}
+		
 	}
 	
 	function cp_oncontentbox_additional_2_content($data) {

@@ -20,6 +20,8 @@ define( 'CP_PLUGIN_URL', plugins_url( $path = '/collabpress' ) );
  */
 require ( CP_PLUGIN_DIR . '/cp-core/cp-core-install.php' );
 
+define( 'CP_MINIMUM_USER', get_option('cp_user_level'));
+
 /*** 
  * Include core functions
  */

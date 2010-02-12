@@ -7,6 +7,11 @@ if (!function_exists ('add_action')) {
 		exit();
 }
 
+// Set Defaults
+if (get_option('cp_email_config') == NULL) { update_option('cp_email_config', 1); }
+if (get_option('cp_user_level') == NULL) { update_option('cp_user_level', 10); }
+
+// DB Version
 $cp_db_version = "0.1";
 
 function cp_install () {

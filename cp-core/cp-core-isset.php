@@ -1,44 +1,5 @@
 <?php
 
-// Check if there are any projects
-if (!check_cp_project()) {
-	?>
-	<div class="updated">
-		<p><strong><?php _e( 'Welcome to CollabPress! To create your first project click <a href="admin.php?page=cp-projects-page">here</a>.', 'collabpress' ); ?></strong></p>
-	</div>
-	<?php
-}
-
-// Add Project
-if ( isset($_POST['cp_add_project_submit']) ) {
-	check_admin_referer('cp-add-project');
-	global $wpdb, $current_user;
-	
-	$cp_project_auth = $current_user->ID;
-	$cp_project_date =  date("Y-m-d H:m:s");
-	$cp_project_title = esc_html($_POST['cp_project_title']);
-	$cp_project_details = esc_html($_POST['cp_project_details']);
-	
-	$table_name = $wpdb->prefix . "cp_projects";
-
-	$results = $wpdb->insert($table_name, array('auth' => $cp_project_auth, 'date' => $cp_project_date, 
-		'title' => $cp_project_title, 'details' => $cp_project_details ) );
-
-	// Retrieve newly created record id
-	$lastid = $wpdb->insert_id;
-	
-	// Add activity log record
-	insert_cp_activity($cp_project_auth, $cp_project_date, 'created', $cp_project_title, 'project', $lastid);
-
-?>
-
-	<div class="updated">
-		<p><strong><?php _e('Project '.$cp_project_title.' has been added. To add a new task click <a href="admin.php?page=cp-projects-page&view=project&project='.$lastid.'">here</a>.', 'collabpress'); ?></strong></p>
-	</div>
-	
-<?php
-}
-
 // Add Task
 if ( isset($_POST['cp_add_task_button']) ) {
 	check_admin_referer('cp-add-task');
@@ -105,7 +66,107 @@ if(isset($_GET['delete-task']))
 <?php
 }
 
-// Delete Task
+
+// Complete Task
+if(isset($_GET['completed-task']))
+{
+	global $current_user;
+	
+	$cp_auth = $current_user->ID;
+	$cp_date =  date("Y-m-d H:m:s");
+	
+	check_admin_referer('cp-action-complete_task');
+	update_cp_task($_GET['completed-task'], '1');
+	
+	// Add to activity stream
+	insert_cp_activity($cp_auth, $cp_date, 'completed', get_cp_task_title($_GET['completed-task']), 'task', get_cp_task_project_id($_GET['completed-task']));
+?>
+	<div class="updated">
+		<p><strong><?php _e( 'Task Completed', 'collabpress' ); ?></strong></p>
+	</div>
+	
+<?php
+}
+
+// Uncomplete Task
+if(isset($_GET['reopened-task']))
+{
+	global $current_user;
+	
+	$cp_auth = $current_user->ID;
+	$cp_date =  date("Y-m-d H:m:s");
+	
+	check_admin_referer('cp-action-uncomplete_task');
+	update_cp_task($_GET['reopened-task'], '0');
+	
+	// Add to activity stream
+	insert_cp_activity($cp_auth, $cp_date, 'reopened', get_cp_task_title($_GET['reopened-task']), 'task', get_cp_task_project_id($_GET['reopened-task']));
+?>
+	<div class="updated">
+		<p><strong><?php _e( 'Task Status Updated', 'collabpress' ); ?></strong></p>
+	</div>
+	
+<?php
+}
+
+// Add Project
+if ( isset($_POST['cp_add_project_submit']) ) {
+	check_admin_referer('cp-add-project');
+	global $wpdb, $current_user;
+	
+	$cp_project_auth = $current_user->ID;
+	$cp_project_date =  date("Y-m-d H:m:s");
+	$cp_project_title = esc_html($_POST['cp_project_title']);
+	$cp_project_details = esc_html($_POST['cp_project_details']);
+	
+	$table_name = $wpdb->prefix . "cp_projects";
+
+	$results = $wpdb->insert($table_name, array('auth' => $cp_project_auth, 'date' => $cp_project_date, 
+		'title' => $cp_project_title, 'details' => $cp_project_details ) );
+
+	// Retrieve newly created record id
+	$lastid = $wpdb->insert_id;
+	
+	// Add activity log record
+	insert_cp_activity($cp_project_auth, $cp_project_date, 'created', $cp_project_title, 'project', $lastid);
+
+?>
+
+	<div class="updated">
+		<p><strong><?php _e($cp_project_title.' has been created. Click <a href="admin.php?page=cp-projects-page&view=project&project='.$lastid.'">here</a> to manage this project.', 'collabpress'); ?></strong></p>
+	</div>
+	
+<?php
+}
+
+// Edit Project
+if ( isset($_POST['cp_edit_project_submit']) ) {
+	check_admin_referer('cp-edit-project');
+	global $wpdb, $current_user;
+	
+	$cp_edit_project_auth = $current_user->ID;
+	$cp_edit_project_date =  date("Y-m-d H:m:s");
+	$cp_edit_project_id = esc_html($_POST['cp_edit_project_id']);
+	$cp_edit_project_title = esc_html($_POST['cp_edit_project_title']);
+	$cp_edit_project_details = esc_html($_POST['cp_edit_project_details']);
+	
+	$table_name = $wpdb->prefix . "cp_projects";
+		
+	$results = $wpdb->query("UPDATE $table_name SET title = '".$cp_edit_project_title."', details = '".$cp_edit_project_details."'  WHERE id = '".$cp_edit_project_id."'");
+	
+	// Add activity log record
+	insert_cp_activity($cp_edit_project_auth, $cp_edit_project_date, 'edited', $cp_edit_project_title, 'project', $cp_edit_project_id);
+
+?>
+
+	<div class="updated">
+		<p><strong><?php _e( 'Project edited. <a href="admin.php?page=cp-projects-page&view=project&project='.$cp_edit_project_id.'">back</a>', 'collabpress' ); ?></strong></p>
+	</div>
+	
+<?php
+}
+
+// Delete Project
 if(isset($_GET['delete-project']))
 {
 	check_admin_referer('cp-action-delete_project');
@@ -117,31 +178,4 @@ if(isset($_GET['delete-project']))
 	
 <?php
 }
-
-// Complete Task
-if(isset($_GET['completed-task']))
-{
-	check_admin_referer('cp-action-complete_task');
-	update_cp_task($_GET['completed-task'], '1');	
-?>
-	<div class="updated">
-		<p><strong><?php _e( 'Task Completed', 'collabpress' ); ?></strong></p>
-	</div>
-	
-<?php
-}
-
-// Uncomplete Task
-if(isset($_GET['uncompleted-task']))
-{
-	check_admin_referer('cp-action-uncomplete_task');
-	update_cp_task($_GET['uncompleted-task'], '0');	
-?>
-	<div class="updated">
-		<p><strong><?php _e( 'Task Status Updated', 'collabpress' ); ?></strong></p>
-	</div>
-	
-<?php
-}
-
 ?>

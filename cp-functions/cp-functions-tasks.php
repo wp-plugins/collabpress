@@ -42,7 +42,7 @@ function update_cp_task($task, $status) {
 	
 }
 
-// Get project title
+// Get tasks project id
 function get_cp_task_project_id($id) {
 	
 	global $wpdb;
@@ -54,6 +54,27 @@ function get_cp_task_project_id($id) {
 	if ($cp_get_task_project_id) {
 	
 		return $cp_get_task_project_id;
+		
+	} else {
+		
+		return false;
+	
+	}
+	
+}
+
+// Get tasks title
+function get_cp_task_title($id) {
+	
+	global $wpdb;
+	
+	$table_name = $wpdb->prefix . "cp_tasks";
+	
+	$get_cp_task_title = $wpdb->get_var("SELECT DISTINCT title FROM " . $table_name . " WHERE id = '".$id."'");
+	
+	if ($get_cp_task_title) {
+	
+		return $get_cp_task_title;
 		
 	} else {
 		
@@ -129,7 +150,7 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 				
 				} else {
 					// This should never get executed / remove in future version
-					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&reopened-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -142,7 +163,20 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 				}
 			
 				echo "<strong>". $cp_list_my_task->title . "</strong>";
-				echo " <code>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
+				
+				$today = date("n-d-Y", mktime(date("n"), date("d"), date("Y")));
+				
+				if ($cp_list_my_task->due_date < $today) {
+				
+					$date_color = "#CC3333";
+					
+				} else {
+					
+					$date_color = "#33FF99";
+
+				}
+				
+				echo " <code style='background:".$date_color."'>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
 			
 				if ($cp_list_my_task->status == 1) {
 					echo '</span>';
@@ -151,7 +185,7 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// If there is a description
 				if ($cp_list_my_task->details) {
@@ -209,7 +243,7 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 				
 				} else {
 						
-					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_completed_task->id;
+					$link = 'admin.php?page='.$page_name.'&reopened-task=' .$cp_completed_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -231,7 +265,7 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// If there is a description
 				if ($cp_list_my_task->details) {
@@ -250,11 +284,12 @@ function list_cp_tasks($project_id=NULL, $page_name=NULL) {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=alltasks">' . __('View More', 'collabpress') . '</a></p>';	
+		// View more
+		// echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=alltasks">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 		
-		echo "<p>No tasks...</p>";
+		echo "<p>No tasks......</p>";
 		
 	}
 	
@@ -312,7 +347,7 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				
 				} else {
 					// This should never get executed / remove in future version
-					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&reopened-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -325,7 +360,20 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				}
 			
 				echo "<strong>". $cp_list_my_task->title . "</strong>";
-				echo " <code>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
+				
+				$today = date("n-d-Y", mktime(date("n"), date("d"), date("Y")));
+				
+				if ($cp_list_my_task->due_date < $today) {
+				
+					$date_color = "#CC3333";
+					
+				} else {
+					
+					$date_color = "#33FF99";
+
+				}
+				
+				echo " <code style='background:".$date_color."'>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
 			
 				if ($cp_list_my_task->status == 1) {
 					echo '</span>';
@@ -334,7 +382,7 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// Display project title
 				if ($cp_list_my_task->proj_id) {
@@ -395,7 +443,7 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				
 				} else {
 						
-					$link = 'admin.php?page='.$page_name.'&uncompleted-task=' .$cp_completed_task->id;
+					$link = 'admin.php?page='.$page_name.'&reopened-task=' .$cp_completed_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -417,7 +465,7 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 				$link = 'admin.php?page='.$page_name.'&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// Display project title
 				if ($cp_list_my_task->proj_id) {
@@ -443,11 +491,12 @@ function list_cp_my_tasks($project_id=NULL, $page_name=NULL) {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
+		// View more
+		// echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 		
-		echo '<p>No tasks</p>';
+		echo '<p>No tasks...</p>';
 		
 	}
 	
@@ -497,7 +546,7 @@ function list_cp_users_tasks($userid, $page_name) {
 				
 				} else {
 					// This should never get executed / remove in future version
-					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&uncompleted-task=' .$cp_list_my_task->id;
+					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&reopened-task=' .$cp_list_my_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -510,7 +559,20 @@ function list_cp_users_tasks($userid, $page_name) {
 				}
 			
 				echo "<strong>". $cp_list_my_task->title . "</strong>";
-				echo " <code>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
+				
+				$today = date("n-d-Y", mktime(date("n"), date("d"), date("Y")));
+				
+				if ($cp_list_my_task->due_date < $today) {
+				
+					$date_color = "#CC3333";
+					
+				} else {
+					
+					$date_color = "#33FF99";
+
+				}
+				
+				echo " <code style='background:".$date_color."'>" . __('Due', 'collabpress') . ": " . $cp_list_my_task->due_date . "</code>";
 			
 				if ($cp_list_my_task->status == 1) {
 					echo '</span>';
@@ -519,7 +581,7 @@ function list_cp_users_tasks($userid, $page_name) {
 				$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&delete-task=' . $cp_list_my_task->id . '&task-title=' . $cp_list_my_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// Display project title
 				if ($cp_list_my_task->proj_id) {
@@ -580,7 +642,7 @@ function list_cp_users_tasks($userid, $page_name) {
 				
 				} else {
 						
-					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&uncompleted-task=' .$cp_completed_task->id;
+					$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&reopened-task=' .$cp_completed_task->id;
 					$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-uncomplete_task') : $link;
 					?><p><input onclick="window.location='<?php echo $link; ?>'; return true;" type='checkbox' name='option1' value='1'><?php
 				
@@ -602,7 +664,7 @@ function list_cp_users_tasks($userid, $page_name) {
 				$link = 'admin.php?page='.$page_name.'&view=userpage&user=' . $user_info->ID . '&delete-task=' . $cp_completed_task->id . '&task-title=' . $cp_completed_task->title;
 				$link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url($link, 'cp-action-delete_task') : $link;
 				
-				echo '<a href="'.$link.'">delete</a></p>';
+				echo '<a style="color:#D54E21" href="'.$link.'">delete</a></p>';
 				
 				// Display project title
 				if ($cp_list_my_task->proj_id) {
@@ -628,11 +690,12 @@ function list_cp_users_tasks($userid, $page_name) {
 			
 		}
 		
-		echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
+		// View more
+		// echo '<p><a style="text-decoration:none; color:#D54E21" href="admin.php?page=cp-dashboard-page&view=allmytasks">' . __('View More', 'collabpress') . '</a></p>';	
 	
 	} else {
 		
-		echo '<p>No tasks</p>';
+		echo '<p>No tasks...</p>';
 		
 	}
 	

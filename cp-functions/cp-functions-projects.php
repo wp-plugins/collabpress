@@ -144,4 +144,25 @@ function check_cp_project() {
 	
 }
 
+// Check if specific project exists
+function check_cp_project_exists($id) {
+	
+	global $wpdb;
+	
+	$table_name = $wpdb->prefix . "cp_projects";
+	
+	$cp_check_projects = $wpdb->get_results("SELECT id FROM $table_name WHERE id = '".$id."' ");
+	
+	if ($cp_check_projects) {
+		
+		return true;
+		
+	} else {
+		
+		return false;
+		
+	}
+	
+}
+
 ?>
