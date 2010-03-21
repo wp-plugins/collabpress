@@ -17,7 +17,7 @@ if (!function_exists ('add_action')) {
 }
 
 // Define current version
-define( 'CP_VERSION', '0.5.2' );
+define( 'CP_VERSION', '0.5.3' );
 
 // Add "View CollabPress Dashboard" link on plugins page
 $cp_plugin = plugin_basename(__FILE__); 
