@@ -1,39 +1,39 @@
 === CollabPress ===
 Contributors: wds-scott, williamsba1
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
-Tags: task, management, basecamp, to do, projects, planning, tracking, reporting
+Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting
 Requires at least: 2.9
-Tested up to: 2.9.2
-Stable tag: 0.5.3
+Tested up to: 3.0.1
+Stable tag: 1.0
 
-Project management and task tracking software for WordPress and WPMU
+Project management and task tracking software for WordPress
 
 == Description ==
 
-This plugin adds project and task management functionality to WordPress. Easily create projects and assign tasks to users.
-
-CollabPress v0.4b Screencast
-
-[vimeo http://vimeo.com/9408136]
+CollabPress adds project and task management functionality to WordPress. Easily create projects and assign tasks to users.
 
 Features include:
 
-* Unlimited project and task creation
-* Easily edit tasks and projects
+* Unlimited projects, task lists, tasks, and comments
+* Easily edit/delete projects, task lists, tasks, and comments
 * Email notifications for new tasks and comments
-* Assign due dates to tasks
+* Task due dates with a calendar view
 * Uses built-in WordPress user accounts
+* Activity log tracking all activity
 
-Works with WordPress and WordPress MU
+Works with WordPress and Multisite
 
 == Screenshots ==
 
-1. CollabPress Dashboard showing recent activity, my tasks, and more
-2. Project view showing active tasks and who is assigned to each
-3. Easily add a new task to any project created
-4. Add comments to individual tasks
+1. CollabPress Dashboard showing recent activity, users, overview, and more
+2. Task list view showing active and completed tasks and who is assigned to each
+3. Single task view with comments
+4. Calendar view with tasks and due dates
 
 == Changelog ==
+
+= 1.0 =
+* Complete rebuild using custom post types
 
 = 0.5.3 =
 * Added CollabPress styles to necessary admin pages
@@ -73,6 +73,9 @@ Works with WordPress and WordPress MU
 
 == Upgrade Notice ==
 
+= 1.0 =
+* CollabPress v1.0 does NOT support legacy CollabPress data at this time. If you are running a previous version, your data will not be lost, but it will not be displayed or used in the new version.
+
 = 0.5.3 =
 * Added CollabPress styles to necessary admin pages
 
@@ -84,23 +87,25 @@ Works with WordPress and WordPress MU
 
 == Installation ==
 
-1. Upload the CollabPress folder to the plugins directory in your WordPress or WPMU installation
+1. Upload the CollabPress folder to the plugins directory in your WordPress installation
 2. Activate the plugin
 3. Navigate to the CollabPress menu
 
 That's it! Now you can easily start adding new projects and tasks
 
-If you are upgrading from a previous version of CollabPress be sure to deactivate and reactivate the plugin to verify all database tables are updated correctly.
-
 == Frequently Asked Questions ==
+
+= Where did all of my data go? =
+
+CollabPress v1.0 does NOT support legacy CollabPress data at this time. If you are running a previous version, your data will not be lost, but it will not be displayed or used in the new version.  To retrieve your data install an older version of CollabPress.
 
 = Why are some features not implemented? =
 
-CollabPress is currently in early development. If you have any bugs to report, ideas or anything else please visit the support forum. [CollabPress Support](http://webdevstudios.com/support/forum/collabpress/ "WordPress Plugins and Support Services")
+CollabPress is currently in early development. If you have any bugs to report, ideas or anything else please visit the support forum. [CollabPress Support](http://collabpress.org/support/forum/ "Task Management Plugin Support")
 
-= Does this plugin work with WordPress MU? =
+= Does this plugin work with WordPress Multisite? =
 
-Absolutely!  This plugin has been tested and verified to work on the most current version of WordPress MU
+Absolutely!  This plugin has been tested and verified to work on the most current version of WordPress Multisite
 
 == Plugin Support ==
-[CollabPress Support](http://webdevstudios.com/support/forum/collabpress/ "WordPress Plugins and Support Services")
+[CollabPress Support](http://collabpress.org/support/forum/ "CollabPress Plugin Support")

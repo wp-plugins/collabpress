@@ -1,38 +1,37 @@
 <?php
-
 /*
 Plugin Name: CollabPress
-Plugin URI: http://wordpress.org/extend/plugins/collabpress/
-Description: CollabPress adds project and task management to WordPress.
-Author: WebDevStudios
-Version: 0.5.3
+Plugin URI: http://collabpress.org/
+Description: A Project Management Plugin for WordPress
+Version: 1.0
+Author: WebDevStudios.com
 Author URI: http://webdevstudios.com/
+License: GPLv2
 */
 
-// Avoid direct calls to this page
-if (!function_exists ('add_action')) {
-		header('Status: 403 Forbidden');
-		header('HTTP/1.1 403 Forbidden');
-		exit();
-}
+/*  Copyright 2010  WebDevStudios  (email : contact@webdevstudios.com)
 
-// Define current version
-define( 'CP_VERSION', '0.5.3' );
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License, version 2, as
+    published by the Free Software Foundation.
 
-// Add "View CollabPress Dashboard" link on plugins page
-$cp_plugin = plugin_basename(__FILE__); 
-add_filter( 'plugin_action_links_' . $cp_plugin, 'filter_plugin_actions' );
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-function filter_plugin_actions ( $links ) { 
-	$settings_link = '<a href="options-general.php?page=cp-dashboard-page">View Dashboard</a>'; 
-	array_unshift ( $links, $settings_link ); 
-	return $links;
-}
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 
-// Require core CollabPress code
-require_once( WP_PLUGIN_DIR . '/collabpress/cp-core.php' );
+// CollabPress Define(s)
+define( 'CP_VERSION', '1.0' );
+define( 'CP_BASENAME', plugin_basename(__FILE__) );
+define( 'CP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CP_PLUGIN_URL', plugins_url( $path = 'collabpress/' ) );
+define( 'CP_DASHBOARD', 'admin.php?page=collabpress-dashboard' );
 
-// Install CollabPress
-register_activation_hook(__FILE__,'cp_install');
 
-?>
+// CollabPress Core
+require_once( 'cp-core.php' );

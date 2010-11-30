@@ -1,0 +1,3 @@
+<p class="cp_about">
+	<a target="_blank" href="http://collabpress.org">CollabPress</a> v<?php echo CP_VERSION; ?> - <a href="http://collabpress.org/support/forum/" target="_blank">Please Report Bugs</a> &middot; Follow us on Twitter: <a href="http://twitter.com/collabpress/" target="_blank">CollabPress</a> &middot; <a href="http://twitter.com/scottbasgaard/" target="_blank">Scott</a> &middot; <a href="http://twitter.com/williamsba/" target="_blank">Brad</a> &middot; <a href="http://twitter.com/webdevstudios/" target="_blank">WDS</a>
+</p>
