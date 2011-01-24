@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget
 Requires at least: 2.9
 Tested up to: 3.1
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 Project management and task tracking software for WordPress
 
@@ -34,6 +34,9 @@ Works with WordPress and Multisite
 5. Shortcode support example
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixed front-end shortcode viewing bug
 
 = 1.1 =
 * Front-end shortcode support using [collabpress]
@@ -85,6 +88,9 @@ Works with WordPress and Multisite
 * First beta release
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+* Fixed front-end shortcode viewing bug
 
 = 1.1 =
 * Front-end shortcode support using [collabpress]
