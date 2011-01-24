@@ -1,5 +1,5 @@
 === CollabPress ===
-Contributors: wds-scott, williamsba1, cochran
+Contributors: WDS-Scott, williamsba1, cochran
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
 Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget
 Requires at least: 2.9
