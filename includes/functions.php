@@ -20,11 +20,11 @@ function cp_get_page_title() {
 	
 		// Edit Task
 		if ( isset($_GET['view']) && $_GET['view'] == 'edit' ) :
-			$dashboardTitle = '<h2>'.cp_screen_icon('options-general').get_the_title($cp_task->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&task='.$cp_task->id.'">'.__('Back', 'collabpress').'</a></h2>';
+			$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').get_the_title($cp_task->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&task='.$cp_task->id.'">'.__('Back', 'collabpress').'</a></h2>';
 		
 		// Normal Task
 		else :
-			$dashboardTitle = '<h2>'.cp_screen_icon('options-general').get_the_title($cp_task->id);
+			$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').get_the_title($cp_task->id);
 			    
 			//check if user can view edit/delete links
 			if ( cp_check_permissions( 'settings_user_role' ) ) {
@@ -40,11 +40,11 @@ function cp_get_page_title() {
 	
 		// Edit Task List
 		if ( isset($_GET['view']) && $_GET['view'] == 'edit' ) :
-			$dashboardTitle = '<h2>'.cp_screen_icon('options-general').get_the_title($cp_task_list->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&task-list='.$cp_task_list->id.'">'.__('Back', 'collabpress').'</a></h2>';
+			$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').get_the_title($cp_task_list->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&task-list='.$cp_task_list->id.'">'.__('Back', 'collabpress').'</a></h2>';
 		
 		// Normal Task List
 		else :
-			$dashboardTitle = '<h2>'.cp_screen_icon('options-general').get_the_title($cp_task_list->id);
+			$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').get_the_title($cp_task_list->id);
 		
 		    //check if user can view edit/delete links
 		    if ( cp_check_permissions( 'settings_user_role' ) ) {
@@ -63,7 +63,7 @@ function cp_get_page_title() {
 		
 		// Edit Project
 		if ( isset($_GET['view']) && $_GET['view'] == 'edit' ) :
-			$dashboardTitle = '<h2>'.cp_screen_icon('options-general').get_the_title($cp_project->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'">'.__('Back', 'collabpress').'</a></h2>';
+			$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').get_the_title($cp_project->id).' - <a title="'.__('Back', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'">'.__('Back', 'collabpress').'</a></h2>';
 			
 		// Normal Project
 		else :
@@ -71,11 +71,11 @@ function cp_get_page_title() {
 			$cp_del_link = CP_DASHBOARD .'&cp-delete-project-id='.$cp_project->id;
 			$cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_project' ) : $cp_del_link;
 
-			$dashboardTitle = '<h2><a title="'.__('CollabPress Dashboard', 'collabpress').'" href="'.CP_DASHBOARD.'">'.cp_screen_icon('options-general').'</a>'.get_the_title($cp_project->id);
+			$dashboardTitle = '<h2><a title="'.__('CollabPress Dashboard', 'collabpress').'" href="'.CP_DASHBOARD.'">'.cp_screen_icon('collabpress').'</a>'.get_the_title($cp_project->id);
 
 			//check if user can view edit/delete links
 			if ( cp_check_permissions( 'settings_user_role' ) ) {
-				$dashboardTitle .= ' - <a title="'.__('Edit', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&view=edit">'.__('Edit', 'collabpress').'</a> <a href="'. $cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected project, including ALL task lists and tasks in the project.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">'.__( 'Delete', 'collabpress' ). '</a>';
+				$dashboardTitle .= ' - <a title="'.__('Edit', 'collabpress').'" href="'.CP_DASHBOARD.'&project='.$cp_project->id.'&view=edit">'.__('Edit', 'collabpress').'</a>&middot; <a href="'. $cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected project, including ALL task lists and tasks in the project.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">'.__( 'Delete', 'collabpress' ). '</a>';
 			}
 
 			$dashboardTitle .= '</h2>';
@@ -87,15 +87,15 @@ function cp_get_page_title() {
 	// User
 	elseif ( $cp_user_page ) :
 		$userdata = get_userdata($cp_user->id);
-		$dashboardTitle = '<h2>'.cp_screen_icon('options-general').$userdata->display_name.'</h2>';
+		$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').$userdata->display_name.'</h2>';
 		
 	// Calendar
 	elseif ( $cp_calendar_page ) :
-		$dashboardTitle = '<h2>'.cp_screen_icon('options-general').__('Calendar', 'collabpress').'</h2>';
+		$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').__('Calendar', 'collabpress').'</h2>';
 		
 	// Dashboard
 	else :
-		$dashboardTitle = '<h2><a title="'.__('CollabPress Dashboard', 'collabpress').'" href="'.CP_DASHBOARD.'">'.cp_screen_icon('options-general').__('CollabPress Dashboard', 'collabpress').'</a></h2>';
+		$dashboardTitle = '<h2><a title="'.__('CollabPress Dashboard', 'collabpress').'" href="'.CP_DASHBOARD.'">'.cp_screen_icon('collabpress').__('CollabPress Dashboard', 'collabpress').'</a></h2>';
 	endif;
 	
 	return $dashboardTitle;
@@ -118,30 +118,34 @@ function cp_get_breadcrumb() {
 
 
 	// Task page
-	if ( $cp_project_page ) :
-
-	    echo '<a href="' .CP_DASHBOARD. '">Dashboard</a>&nbsp;>&nbsp;' .get_the_title( $cp_project->id );
-
-	elseif ( $cp_task_list_page ) :
-	    //load the project ID for this task list
-	    $cp_project_id = get_post_meta( $cp_task_list->id, '_cp-project-id', true );
-
-	    echo '<a href="' .CP_DASHBOARD. '">Dashboard</a>&nbsp;>&nbsp;<a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a> > ' .get_the_title($cp_task_list->id);
+	echo '<div id="cp_breadcrumb">';
+		echo '<ul>';
+		if ( $cp_project_page ) :
+		
+			echo '<li class="dash-crumb"><a href="' .CP_DASHBOARD. '">Dashboard</a></li><li class="proj-crumb"><span>' .get_the_title( $cp_project->id ) .'</span></li>';
 	
-	elseif ( $cp_task_page ) :
-	    //load the project ID for this task list
-	    $cp_project_id = get_post_meta( $cp_task->id, '_cp-project-id', true );
-
-	    //load the task list ID for this task
-	    $cp_task_list_id = get_post_meta( $cp_task->id, '_cp-task-list-id', true );
+		elseif ( $cp_task_list_page ) :
+			//load the project ID for this task list
+			$cp_project_id = get_post_meta( $cp_task_list->id, '_cp-project-id', true );
 	
-	    echo '<a href="' .CP_DASHBOARD. '">Dashboard</a>&nbsp;>&nbsp;<a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a>&nbsp;>&nbsp;<a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'&task-list='.$cp_task_list_id.'">' .get_the_title( $cp_task_list_id ). '</a>&nbsp;>&nbsp;' .get_the_title( $cp_task->id );
-
-	else :
-
-	    echo '<a href="' .CP_DASHBOARD. '">Dashboard</a>';
-
-	endif;
+			echo '<li class="dash-crumb"><a href="' .CP_DASHBOARD. '">Dashboard</a></li><li class="proj-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a></li><li class="list-crumb"><span>' .get_the_title($cp_task_list->id).'</span></li>';
+		
+		elseif ( $cp_task_page ) :
+			//load the project ID for this task list
+			$cp_project_id = get_post_meta( $cp_task->id, '_cp-project-id', true );
+	
+			//load the task list ID for this task
+			$cp_task_list_id = get_post_meta( $cp_task->id, '_cp-task-list-id', true );
+		
+			echo '<li class="dash-crumb"><a href="' .CP_DASHBOARD. '">Dashboard</a></li><li class="proj-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a></li><li class="list-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'&task-list='.$cp_task_list_id.'">' .get_the_title( $cp_task_list_id ). '</a></li><li class="task-crumb"><span>' .get_the_title( $cp_task->id ).'</span></li>';
+	
+		else :
+	
+			echo '<li class="dash-crumb"><span>Dashboard</span></li>';
+			
+		endif;
+		echo '</ul>';
+	echo '</div>';
 }
 
 // Send Emails from CollabPress
@@ -209,6 +213,10 @@ function cp_user_notice($data) {
 	// Comment Added
 	if ( isset( $data['cp-add-comment'] ) )
 		echo '<div class="updated fade"><p><strong>'.__('Comment Added', 'collabpress').'</strong></p></div>';
+
+	// Activity log cleared
+	if ( isset( $data['cp_clear_activity'] ) )
+		echo '<div class="updated fade"><p><strong>' .__( 'Acitivity Log Has Been Cleared', 'collabpress' ) .'</strong></p></div>';
 
 }
 
@@ -280,14 +288,22 @@ function cp_projects() {
 }
 
 // List CollabPress Users
-function cp_users() {
-	
-	$wp_user_search = new WP_User_Search( '', '', '');
-	$users = $wp_user_search->get_results();
-	
+function cp_users( $limit='yes' ) {
+	global $wpdb;
+
+	//using a custom query for now
+	//will update with WP_User_Query when WP 3.1 is released
+	//http://wpdevel.wordpress.com/2010/10/07/wp_user_search-has-been-replaced-by-wp_u/
+	$users = $wpdb->get_results( $wpdb->prepare( "SELECT ID from $wpdb->users ORDER BY ID" ) );
+	$cp_users_count = count( $users );
+
+	//load num users setting
+	$options = get_option( 'cp_options' );
+	$cp_num_users_display = ( isset( $options['num_users_display'] ) ) ? $options['num_users_display'] : '10';
+
 	$avatarCount = 1;
 	foreach ($users as $user) {
-		$userdata = get_userdata($user);
+		$userdata = get_userdata( $user->ID );
 		
 		if ( ($avatarCount % 4) == 0 ) {
 			$last = 'class="last"';
@@ -297,11 +313,21 @@ function cp_users() {
 		
 		echo '<a '.$last.' title="'.$userdata->display_name.'" href="'.CP_DASHBOARD.'&user='.$userdata->ID.'">'.get_avatar($userdata->ID, '64').'</a>';
 		$avatarCount++;
+
+		//display users based on setting value
+		if ( $avatarCount > $cp_num_users_display && $limit == 'yes' ) break;
+		
 	}
 	
 	// Get Current User
 	global $current_user;
 	get_currentuserinfo();
+	
+	if ( $cp_users_count > $cp_num_users_display ) :
+	    echo '<div style="clear:both;"></div>';
+	    echo '<p><a title="' .__( 'View All Users', 'collabpress' ) .'" href="' .CP_DASHBOARD .'&allusers=1">' .__( 'View All Users', 'collabpress' ) .'</a></p>';
+	endif;
+	
 }
 
 // Show Overview
@@ -325,35 +351,47 @@ function cp_overview() {
 	echo '<p><span class="overview-count">'.$taskCount.'</span> Task'.(($taskCount == 1) ? '' : 's').'</p>';
 	
 	// User Count
-	$userCount = new WP_User_Search( '', '', '');
-	$userCount = $userCount->get_results();
-	$userCount = count($userCount);
-	echo '<p><span class="overview-count">'.$userCount.'</span> User'.(($userCount == 1) ? '' : 's').'</p>';
+	$result = count_users();
+	echo '<p><span class="overview-count">' .$result['total_users'] .'</span> User' .( ( $result['total_users'] == 1 ) ? '' : 's' ) .'</p>';
 	
 	echo '</div>';
 }
 
 // Thumnnail
-function cp_thumbnail($id = NULL) {
+function cp_files($id = NULL) {
 	?>
-	<input type="hidden" class="cp-featured-id" value="<?php echo $id; ?>" />
-	<input id="upload_image_button" name="upload_image" type="button" value="<?php _e('Upload', 'collabpress') ?>" />
-	<div id="postimagediv-<?php echo $id; ?>">
-		<div class="inside">
-			<?php if ( has_post_thumbnail( $id ) ) :
-				$image_id = get_post_thumbnail_id($id);  
-			   	$image_url = wp_get_attachment_image_src($image_id,'large');  
-			   	$image_url = $image_url[0];
-			?> 
-				<p class="hide-if-no-js">
-					<a class="thickbox" id="set-post-thumbnail" href="media-upload.php?post_id=<?php echo $id; ?>&amp;type=image&amp;TB_iframe=1" title="<?php _e('', 'collabpress') ?>">
-						<img width="244" title="avatar" alt="avatar" class="attachment-post-thumbnail" src="<?php echo $image_url; ?>">
-					</a>
-				</p>
-			<?php endif; ?>
-		</div>
-	</div>
+	<form id="upload_image" name="upload_image">
+	<input class="cp-featured-id" type="hidden" value="<?php echo $id; ?>" />
+	<input id="upload_image_button" type="button" value="<?php _e('Click to Upload', 'collabpress'); ?>" />
 	<?php
+	
+	echo '<div id="collabpress-uploaded-files">';
+	
+		$args = array(
+			'post_type' => 'attachment',
+			'numberposts' => null,
+			'post_status' => null,
+			'post_parent' => $id
+		);
+		$attachments = get_posts($args);
+		if ($attachments) {
+			echo '<ul>';
+			foreach ($attachments as $attachment) {
+				if ( strpos($attachment->post_mime_type, 'image') !== false ) {
+					$attachment_class = 'class="cp_grouped_elements" rel="group-'.$id.'"';
+				} else {
+					$attachment_class = '';
+				}
+				echo '<li><p><a '.$attachment_class.' href="'.wp_get_attachment_url($attachment->ID).'" title="'.$attachment->post_title.'">'.$attachment->post_title.'</a> - '.$attachment->post_mime_type.'</p></li>';
+			}
+			echo '</ul>';
+		} else {
+			echo '<p>'.__('No file attachments...', 'collabpress') . '</p>';
+		}
+	
+	echo '</div>';
+	
+	echo '</form>';
 }
 
 // Show Recent Activity
@@ -380,33 +418,36 @@ function cp_recent_activity($data = NULL) {
 	// WP_Query();
 	if ( $activities_query->have_posts() ) :
 	$activityCount = 1;
-    while( $activities_query->have_posts() ) : $activities_query->the_post();
-		global $post;
-		
-		if ( ($activityCount % 2) == 0 ) {
-			$row = " even";
-		} else {
-			$row = " odd";
-		}
-		
-		// Avatar
-		$activityUser = get_post_meta($post->ID, '_cp-activity-author', true);
-		$activityUser = get_userdata($activityUser);
-		$activityAction = get_post_meta($post->ID, '_cp-activity-action', true);
-		$activityType = get_post_meta($post->ID, '_cp-activity-type', true);
-		$activityID = get_post_meta($post->ID, '_cp-activity-ID', true);
-		?>
-		
-		<div class="cp-activity-row <?php echo $row ?>">
-			<a class="cp-activity-author" title="<?php $activityUser->display_name ?>" href="<?php echo CP_DASHBOARD; ?>&user=<?php echo $activityUser->ID ?>"><?php echo get_avatar($activityUser->ID, 32) ?></a>
-			<div class="cp-activity-wrap">
-			<p class="cp-activity-description"><?php echo $activityUser->display_name . ' ' . $activityAction . ' a ' . $activityType ?>: <a href="<?php echo cp_get_url( $activityID, $activityType ); ?>"><?php echo get_the_title( $activityID ); ?></a></p>
-			</div>
-		</div>
-		
-		<?php
-		$activityCount++;
-    endwhile;
+	while( $activities_query->have_posts() ) : $activities_query->the_post();
+		    global $post;
+
+		    if ( ($activityCount % 2) == 0 ) {
+			    $row = " even";
+		    } else {
+			    $row = " odd";
+		    }
+
+		    // Avatar
+		    $activityUser = get_post_meta($post->ID, '_cp-activity-author', true);
+		    $activityUser = get_userdata($activityUser);
+		    $activityAction = get_post_meta($post->ID, '_cp-activity-action', true);
+		    $activityType = get_post_meta($post->ID, '_cp-activity-type', true);
+		    $activityID = get_post_meta($post->ID, '_cp-activity-ID', true);
+
+		    if ( $activityUser ) :
+		    ?>
+
+		    <div class="cp-activity-row <?php echo $row ?>">
+			    <a class="cp-activity-author" title="<?php $activityUser->display_name ?>" href="<?php echo CP_DASHBOARD; ?>&user=<?php echo $activityUser->ID ?>"><?php echo get_avatar($activityUser->ID, 32) ?></a>
+			    <div class="cp-activity-wrap">
+			    <p class="cp-activity-description"><?php echo $activityUser->display_name . ' ' . $activityAction . ' a ' . $activityType ?>: <a href="<?php echo cp_get_url( $activityID, $activityType ); ?>"><?php echo get_the_title( $activityID ); ?></a></p>
+			    </div>
+		    </div>
+
+		    <?php
+		    endif;
+		    $activityCount++;
+	endwhile;
 	wp_reset_query();
 	else :
 		echo '<p>'.__( 'No Activities...', 'collabpress' ).'</p>';
@@ -465,16 +506,9 @@ function cp_add_task($data = NULL) {
 						<th scope="row"><label for="cp-task-assign"><?php _e('Assigned to: ', 'collabpress') ?></label></th>
 						<td>
 							<p>
-								<select id="cp-task-assign" name="cp-task-assign">
-									<?php
-									$wp_user_search = new WP_User_Search( '', '', '');
-									$users = $wp_user_search->get_results();
-									foreach ($users as $user) {
-										$user = get_userdata($user);
-										echo '<option value="'.$user->ID.'">'.$user->display_name.'</option>';
-									}
-									?>
-								</select>
+                                <?php
+                                wp_dropdown_users( array( 'name' => 'cp-task-assign' ) );
+                                ?>
 							</p>
 						</td>
 					</tr>
@@ -521,17 +555,10 @@ function cp_edit_task() {
 					<th scope="row"><label for="cp-task-assign"><?php _e('Assigned to: ', 'collabpress') ?></label></th>
 					<td>
 						<p>
-							<select id="cp-task-assign" name="cp-task-assign">
-								<?php
-								$wp_user_search = new WP_User_Search( '', '', '');
-								$users = $wp_user_search->get_results();
-								$selected = get_post_meta($cp_task->id, '_cp-task-assign', true);
-								foreach ($users as $user) {
-									$user = get_userdata($user);
-									echo '<option '.($user->ID == $selected ? 'selected' : '').' value="'.$user->ID.'">'.$user->display_name.'</option>';
-								}
-								?>
-							</select>
+						    <?php
+						    $selected = get_post_meta( $cp_task->id, '_cp-task-assign', true );
+						    wp_dropdown_users( array( 'selected' => $selected, 'name' => 'cp-task-assign' ) );
+						    ?>
 						</p>
 					</td>
 				</tr>
@@ -665,7 +692,7 @@ function cp_task() {
 }
 
 // Add Task list
-function cp_add_task_list($data) {
+function cp_add_task_list() {
 	
 	global $cp_project;
 	
@@ -1002,8 +1029,8 @@ function cp_draw_calendar($month = NULL, $year = NULL) {
 	echo '<div id="cp-calendar-wrap">';
 	
 	if ( !isset($_GET['month']) && !isset($_GET['day']) ) :
-		$month = 11;
-		$year = 2010;
+		$month = date('n');
+		$year = date('Y');
 	else :
 		$month = absint($_GET['month']);
 		$year = absint($_GET['year']);
@@ -1039,7 +1066,7 @@ function cp_draw_calendar($month = NULL, $year = NULL) {
 
 	/* table headings */
 	$headings = array(__('Sunday', 'collabpress'), __('Monday', 'collabpress'), __('Tuesday', 'collabpress'), __('Wednesday', 'collabpress'), __('Thursday', 'collabpress'), __('Friday', 'collabpress'), __('Saturday', 'collabpress'));
-	$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
+	$calendar.= '<tr class="calendar-row" valign="top"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
 
 	/* days and weeks vars now ... */
 	$running_day = date('w',mktime(0,0,0,$month,1,$year));
@@ -1049,7 +1076,7 @@ function cp_draw_calendar($month = NULL, $year = NULL) {
 	$dates_array = array();
 
 	/* row for week one */
-	$calendar.= '<tr class="calendar-row">';
+	$calendar.= '<tr class="calendar-row" valign="top">';
 
 	/* print "blank" days until the first of the current week */
 	for($x = 0; $x < $running_day; $x++):
@@ -1097,7 +1124,7 @@ function cp_draw_calendar($month = NULL, $year = NULL) {
 		if($running_day == 6):
 			$calendar.= '</tr>';
 			if(($day_counter+1) != $days_in_month):
-				$calendar.= '<tr class="calendar-row">';
+				$calendar.= '<tr class="calendar-row" valign="top">';
 			endif;
 			$running_day = -1;
 			$days_in_this_week = 0;
@@ -1198,7 +1225,20 @@ function cp_check_permissions( $type = NULL ) {
     $options = get_option( 'cp_options' );
     $cp_settings_user_role = ( isset( $options[$type] ) ) ? esc_attr( $options[$type] ) : 'manage_options';
 
-    if ( current_user_can( $cp_settings_user_role ) ) {
-	return true;
-    }
+    if ( $cp_settings_user_role == 'all' ) :
+
+        return true;
+
+    else :
+
+        if ( current_user_can( $cp_settings_user_role ) ) :
+
+            return true;
+            
+        endif;
+
+    endif;
+
+    return false;
+    
 }

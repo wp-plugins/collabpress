@@ -13,6 +13,7 @@ $cp_task_list_page = false;
 $cp_task_page = false;
 $cp_user_page = false;
 $cp_calendar_page = false;
+$cp_all_users_page = false;
 
 // CollabPress Objects
 class CP_Project {
@@ -66,15 +67,20 @@ class collabpress_dashboard_page {
 		//load settings user role
 		$cp_settings_user_role = ( isset( $cp_options['settings_user_role'] ) ) ? esc_attr( $cp_options['settings_user_role'] ) : 'manage_options';
 
-		$this->pagehook = add_menu_page('CollabPress Dashboard', "CollabPress", $cp_user_role, COLLABPRESS_DASHBOARD_PAGE, array(&$this, 'on_show_page'), CP_PLUGIN_URL .'includes/images/collabpress-menu-icon.png' );
+		$this->pagehook = add_menu_page( 'CollabPress Dashboard', 'CollabPress', $cp_user_role, COLLABPRESS_DASHBOARD_PAGE, array( &$this, 'on_show_page' ), CP_PLUGIN_URL .'includes/images/collabpress-menu-icon.png' );
 		// Call Back
 		add_action('load-'.$this->pagehook, array(&$this, 'on_load_page'));
-		add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Settings', 'collabpress'), __('Settings', 'collabpress'), $cp_settings_user_role, 'collabpress-settings', 'cp_settings_page');
+
+        //add settings submenu item
+		add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Settings', 'collabpress' ), __( 'Settings', 'collabpress' ), $cp_settings_user_role, 'collabpress-settings', 'cp_settings_page' );
+		
+        //add help submenu item
+        add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Help', 'collabpress' ), __( 'Help', 'collabpress' ), 'read', 'collabpress-help', 'cp_help_page' );
 
 		if ($cp_debug_mode)
 			add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Debug', 'collabpress'), __('Debug', 'collabpress'), $cp_settings_user_role, 'collabpress-debug', 'cp_debug_page');
-		add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
-		add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
+            add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
+            add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
 	}
 	
 	function cp_admin_styles() {
@@ -95,6 +101,7 @@ class collabpress_dashboard_page {
 		global $cp_task_page;
 		global $cp_user_page;
 		global $cp_calendar_page;
+		global $cp_all_users_page;
 		
 		global $cp_project;
 		global $cp_task_list;
@@ -105,14 +112,14 @@ class collabpress_dashboard_page {
 			
 			// Set Project ID
 			$cp_project = new CP_Project();
-			$cp_project->id = esc_html($_GET['project']);
+			$cp_project->id = absint( $_GET['project'] );
 		
 			// Task Page
 			if ( isset($_GET['task']) ) :
 			
 				// Set Task List ID
 				$cp_task = new CP_Task();
-				$cp_task->id = esc_html($_GET['task']);
+				$cp_task->id = absint( $_GET['task'] );
 				
 				$cp_task_page = true;
 			
@@ -121,19 +128,14 @@ class collabpress_dashboard_page {
 			
 				// Set Task List ID
 				$cp_task_list = new CP_TaskList();
-				$cp_task_list->id = esc_html($_GET['task-list']);
+				$cp_task_list->id = absint( $_GET['task-list'] );
 				
 				$cp_task_list_page = true;
 			
 			// Project Page
 			else:
+			
 				$cp_project_page = true;
-				
-				// $attachment = get_post_thumbnail_id( $cp_project->id );
-				// if ($attachment) :
-				// 	$full = get_attached_file( $attachment );
-				// 	wp_update_attachment_metadata( $attachment, wp_generate_attachment_metadata( $attachment, $full ));
-				// endif;
 				
 			endif;
 		
@@ -142,10 +144,14 @@ class collabpress_dashboard_page {
 		
 			// Set User ID
 			$cp_user = new CP_User();
-			$cp_user->id = esc_html($_GET['user']);
+			$cp_user->id = absint( $_GET['user'] );
 		
 			$cp_user_page = true;
-		
+
+		// All Users Page
+		elseif ( isset( $_GET['allusers'] ) ) :
+			$cp_all_users_page = true;
+			
 		// Calendar Page
 		elseif ( isset($_GET['calendar']) ) :
 			$cp_calendar_page = true;
@@ -181,28 +187,33 @@ class collabpress_dashboard_page {
 			add_meta_box('cp-edit-project', __('Edit Project', 'collabpress'), array(&$this, 'cp_edit_project_meta'), $this->pagehook, 'collabpress-project-edit', 'core');
 		endif;
 		
-		// Task Lists
+		// Project
 		if ($cp_project_page) :
 			// Main
 			add_meta_box('cp-add-task-list', __('Add New Task List', 'collabpress'), array(&$this, 'cp_add_task_list_meta'), $this->pagehook, 'collabpress-task-list', 'core');
 			add_meta_box('cp-edit-task-list', __('Edit Task List', 'collabpress'), array(&$this, 'cp_edit_task_list_meta'), $this->pagehook, 'collabpress-task-list-edit', 'core');
 			add_meta_box('cp-query-task-list', __('Project Overview', 'collabpress'), array(&$this, 'cp_task_list_meta'), $this->pagehook, 'collabpress-task-list-query', 'core');
 			// Sidebar
-			//add_meta_box('cp-sidebar-meta-box-thumbnail', __('Thumbnail', 'collabpress'), array(&$this, 'cp_thumbnail_meta'), $this->pagehook, 'collabpress-thumbnail', 'core');
+			add_meta_box('cp-sidebar-meta-box-files', __('Files', 'collabpress'), array(&$this, 'cp_files_meta'), $this->pagehook, 'collabpress-files', 'core');
 			add_meta_box('cp-edit-project', __('Edit Project', 'collabpress'), array(&$this, 'cp_edit_project_meta'), $this->pagehook, 'collabpress-project-edit', 'core');
 		endif;
 		
-		// Tasks
+		// Tasks List
 		if ($cp_task_list_page) :
+			// Main
 			add_meta_box('cp-add-task', __('Add New Task', 'collabpress'), array(&$this, 'cp_add_task_meta'), $this->pagehook, 'collabpress-task', 'core');
 			add_meta_box('cp-edit-task', __('Edit Task', 'collabpress'), array(&$this, 'cp_edit_task_list_meta'), $this->pagehook, 'collabpress-task-list-edit', 'core');
 			add_meta_box('cp-query-task', __('Task List Overview', 'collabpress'), array(&$this, 'cp_task_meta'), $this->pagehook, 'collabpress-task-query', 'core');
+			// Sidebar
+			add_meta_box('cp-sidebar-meta-box-files', __('Files', 'collabpress'), array(&$this, 'cp_files_meta'), $this->pagehook, 'collabpress-files', 'core');
 		endif;
-
+		
+		// Task
 		if ($cp_task_page) :
-
+			// Main
 		    add_meta_box('cp-edit-task', __('Edit Task', 'collabpress'), array(&$this, 'cp_edit_task_meta'), $this->pagehook, 'collabpress-task-edit', 'core');
-
+			// Sidebar
+			add_meta_box('cp-sidebar-meta-box-files', __('Files', 'collabpress'), array(&$this, 'cp_files_meta'), $this->pagehook, 'collabpress-files', 'core');
 		endif;
 		
 		// Footer
@@ -303,7 +314,7 @@ class collabpress_dashboard_page {
 	
 	// CollabPress Users
 	function cp_users_meta($data = NULL) {
-		cp_users();		
+		cp_users( $limit='yes' );
 	}
 	
 	// CollabPress Overview
@@ -311,9 +322,9 @@ class collabpress_dashboard_page {
 		cp_overview();
 	}
 	
-	// CollabPress Thumbnail
-	function cp_thumbnail_meta($id = NULL) {
-		cp_thumbnail($id);
+	// CollabPress Files
+	function cp_files_meta($id = NULL) {
+		cp_files($id);
 	}
 
 	// Recent Activity
@@ -364,7 +375,7 @@ class collabpress_dashboard_page {
 		global $current_user;
 		get_currentuserinfo();
 
-		cp_add_task_list($data);
+		cp_add_task_list();
 	}
 	
 	// Edit Task List

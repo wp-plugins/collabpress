@@ -11,4 +11,6 @@ jQuery(function() {
 	
 	// Date Picker
 	jQuery("#datepicker").datepicker({dateFormat: 'm/d/yy'});
+	
+	jQuery("a.cp_grouped_elements").fancybox();
 });

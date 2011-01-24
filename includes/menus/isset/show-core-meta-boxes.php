@@ -6,6 +6,7 @@ global $cp_task_list_page;
 global $cp_task_page;
 global $cp_user_page;
 global $cp_calendar_page;
+global $cp_all_users_page;
 
 if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
 	
@@ -45,6 +46,10 @@ if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
 // User Page
 elseif ( $cp_user_page ) :
 	cp_user_page();
+
+// All Users Page
+elseif ( $cp_all_users_page ) :
+	cp_users( $limit='no' );
 
 // Calendar Page
 elseif ( $cp_calendar_page ) :

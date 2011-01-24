@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 		thePostID = jQuery(this).parent().children('.cp-featured-id').filter(':first').val();
 		formfield = jQuery('#upload_image').attr('name');
 		inputfield = jQuery('#upload_image_button').attr('name');
-		tb_show('', 'media-upload.php?type=image&post_id='+thePostID+'&TB_iframe=true');
+		tb_show('', 'media-upload.php?type=file&post_id='+thePostID+'&TB_iframe=true');
 	return false;
 	});
 });

@@ -1,4 +1,8 @@
-	/* CollabPress CSS */
+/* CollabPress CSS */
+#collabpress-wrap #icon-collabpress {
+    background: url("../images/collabpress-page-icon.png") no-repeat scroll -10px -5px transparent;
+}
+
 .toplevel_page_collabpress-dashboard {
 	color: #21759B;
 }
@@ -175,4 +179,59 @@ td.calendar-day, td.calendar-day-np { width:120px; padding:5px; border-bottom:1p
 .cp_user_page_right p {
 	margin: 0;
 	padding: 0 0 5px;
+}
+/* CP Breadcrumb */
+#cp_breadcrumb {
+    background-color:#E6E5E5;
+    clear: both;
+    display: block;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 11px;
+    margin: 15px 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+}
+
+#cp_breadcrumb ul {
+	margin:0;
+	padding: 5px 0;
+	overflow: hidden;
+}
+#cp_breadcrumb ul li {
+    background: none repeat scroll 0 0 transparent;
+    float: left;
+    list-style: none outside none;
+    margin: 0;
+    }
+#cp_breadcrumb ul li span {
+	padding:5px 20px 4px 10px;
+	}
+#cp_breadcrumb a {
+	background:#444343;
+	color: #fff;
+	padding: 5px;
+	position: relative;
+	}
+#cp_breadcrumb .dash-crumb a, #cp_breadcrumb .dash-crumb span {
+	background: url("../images/dashboard-bc-bg.png") no-repeat scroll right 0 transparent;
+	padding:5px 20px 4px 10px;
+    z-index: 9;
+    color:#fff;
+	}
+#cp_breadcrumb .proj-crumb a {
+	background: url("../images/project-bc-bg.png") no-repeat scroll right 0 transparent;
+	padding:5px 20px 4px 15px;
+    z-index: 8;
+    margin-left: -10px;
+	}
+#cp_breadcrumb .list-crumb a {
+	background: url("../images/project-bc-bg.png") no-repeat scroll right 0 transparent;
+	padding:5px 20px 4px 15px;
+    z-index: 7;
+    margin-left: -10px;
+	}
+/* Footer */
+.cp_about {
+	text-align: center;
 }

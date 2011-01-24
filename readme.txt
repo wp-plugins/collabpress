@@ -1,10 +1,10 @@
 === CollabPress ===
-Contributors: wds-scott, williamsba1
+Contributors: wds-scott, williamsba1, cochran
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
-Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting
+Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget
 Requires at least: 2.9
-Tested up to: 3.0.1
-Stable tag: 1.0
+Tested up to: 3.1
+Stable tag: 1.1
 
 Project management and task tracking software for WordPress
 
@@ -16,6 +16,8 @@ Features include:
 
 * Unlimited projects, task lists, tasks, and comments
 * Easily edit/delete projects, task lists, tasks, and comments
+* Front-end shortcode support
+* File upload on projects, task lists, task, and comments
 * Email notifications for new tasks and comments
 * Task due dates with a calendar view
 * Uses built-in WordPress user accounts
@@ -29,8 +31,19 @@ Works with WordPress and Multisite
 2. Task list view showing active and completed tasks and who is assigned to each
 3. Single task view with comments
 4. Calendar view with tasks and due dates
+5. Shortcode support example
 
 == Changelog ==
+
+= 1.1 =
+* Front-end shortcode support using [collabpress]
+* Set user level to view shortcode front-end
+* File uploads on projects, task lists, tasks, and comments
+* New CollabPress overview widget
+* New setting to clear the activity log
+* Limit number of users displayed
+* New view all users page
+* Various bug fixes
 
 = 1.0 =
 * Complete rebuild using custom post types
@@ -73,6 +86,16 @@ Works with WordPress and Multisite
 
 == Upgrade Notice ==
 
+= 1.1 =
+* Front-end shortcode support using [collabpress]
+* Set user level to view shortcode front-end
+* File uploads on projects, task lists, tasks, and comments
+* New CollabPress overview widget
+* New setting to clear the activity log
+* Limit number of users displayed
+* New view all users page
+* Various bug fixes
+
 = 1.0 =
 * CollabPress v1.0 does NOT support legacy CollabPress data at this time. If you are running a previous version, your data will not be lost, but it will not be displayed or used in the new version.
 
@@ -102,6 +125,8 @@ CollabPress v1.0 does NOT support legacy CollabPress data at this time. If you a
 = Why are some features not implemented? =
 
 CollabPress is currently in early development. If you have any bugs to report, ideas or anything else please visit the support forum. [CollabPress Support](http://collabpress.org/support/forum/ "Task Management Plugin Support")
+
+You can also view the [CollabPress Roadmap](http://collabpress.org/roadmap/ "WordPress Project Management Plugin Roadmap") to see what features to expect in upcoming versions
 
 = Does this plugin work with WordPress Multisite? =
 

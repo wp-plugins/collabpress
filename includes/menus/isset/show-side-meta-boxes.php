@@ -21,6 +21,7 @@ if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
 		else :
 		endif;
 		
+		do_meta_boxes($this->pagehook, 'collabpress-files', $cp_task->id);
 		do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 	
 	// Task List Page
@@ -30,6 +31,7 @@ if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
 		else :
 		endif;
 		
+		do_meta_boxes($this->pagehook, 'collabpress-files', $cp_task_list->id);
 		do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 		
 	// Project Page
@@ -39,7 +41,7 @@ if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
 		else :
 		endif;
 		
-		do_meta_boxes($this->pagehook, 'collabpress-thumbnail', $cp_project->id);
+		do_meta_boxes($this->pagehook, 'collabpress-files', $cp_project->id);
 		do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 		
 	endif;
@@ -50,12 +52,10 @@ elseif ( $cp_user_page ) :
 
 // Calendar Page
 elseif ( $cp_calendar_page ) :
-
 	do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 
 // Dashboard Page	
 else :
-
 	do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 
 endif;
