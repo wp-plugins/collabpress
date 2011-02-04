@@ -13,6 +13,7 @@ $cp_task_list_page = false;
 $cp_task_page = false;
 $cp_user_page = false;
 $cp_calendar_page = false;
+$cp_view_projects = false;
 $cp_all_users_page = false;
 
 // CollabPress Objects
@@ -71,16 +72,17 @@ class collabpress_dashboard_page {
 		// Call Back
 		add_action('load-'.$this->pagehook, array(&$this, 'on_load_page'));
 
-        //add settings submenu item
+		//add settings submenu item
 		add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Settings', 'collabpress' ), __( 'Settings', 'collabpress' ), $cp_settings_user_role, 'collabpress-settings', 'cp_settings_page' );
-		
-        //add help submenu item
-        add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Help', 'collabpress' ), __( 'Help', 'collabpress' ), 'read', 'collabpress-help', 'cp_help_page' );
 
-		if ($cp_debug_mode)
-			add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Debug', 'collabpress'), __('Debug', 'collabpress'), $cp_settings_user_role, 'collabpress-debug', 'cp_debug_page');
-            add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
-            add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
+		//add help submenu item
+		add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Help', 'collabpress' ), __( 'Help', 'collabpress' ), $cp_settings_user_role, 'collabpress-help', 'cp_help_page' );
+
+		if ( $cp_debug_mode ) :
+		    add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Debug', 'collabpress'), __('Debug', 'collabpress'), $cp_settings_user_role, 'collabpress-debug', 'cp_debug_page');
+		    add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
+		    add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
+		endif;
 	}
 	
 	function cp_admin_styles() {
@@ -101,6 +103,7 @@ class collabpress_dashboard_page {
 		global $cp_task_page;
 		global $cp_user_page;
 		global $cp_calendar_page;
+		global $cp_view_projects;
 		global $cp_all_users_page;
 		
 		global $cp_project;
@@ -155,6 +158,10 @@ class collabpress_dashboard_page {
 		// Calendar Page
 		elseif ( isset($_GET['calendar']) ) :
 			$cp_calendar_page = true;
+			
+		// View Projects
+		elseif ( isset($_GET['view-projects']) ) :
+			$cp_view_projects = true;
 			
 		// Dashbaord
 		else:

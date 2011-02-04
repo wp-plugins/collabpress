@@ -1,0 +1,612 @@
+# Copyright (C) 2010
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/collabpress\n"
+"POT-Creation-Date: 2011-02-04 20:31:27+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: includes/cp-core.php:25
+msgid "View Dashboard"
+msgstr ""
+
+#: includes/cp-core.php:37
+msgid "CollabPress - Recent Activity"
+msgstr ""
+
+#: includes/shortcode.php:180 includes/menus/dashboard.php:179
+msgid "Projects"
+msgstr ""
+
+#: includes/shortcode.php:195 includes/shortcode.php:330
+#: includes/functions.php:278 includes/functions.php:623
+msgid "edit"
+msgstr ""
+
+#: includes/shortcode.php:195 includes/functions.php:78
+#: includes/functions.php:278
+msgid ""
+"WARNING: This will delete the selected project, including ALL task lists and "
+"tasks in the project.\\n\\nChoose [Cancel] to Stop, [OK] to delete.\\n"
+msgstr ""
+
+#: includes/shortcode.php:209 includes/functions.php:286
+msgid "No Projects..."
+msgstr ""
+
+#: includes/shortcode.php:233 includes/functions.php:784
+msgid "Tasks Lists"
+msgstr ""
+
+#: includes/shortcode.php:251 includes/functions.php:801
+msgid ""
+"WARNING: This will delete the selected task list and all tasks in the list."
+"\\n\\nChoose [Cancel] to Stop, [OK] to delete.\\n"
+msgstr ""
+
+#: includes/shortcode.php:257 includes/functions.php:807
+msgid "No Task Lists..."
+msgstr ""
+
+#: includes/shortcode.php:272 includes/functions.php:584
+#: includes/functions.php:997
+msgid "Current Tasks"
+msgstr ""
+
+#: includes/shortcode.php:326 includes/shortcode.php:401
+msgid "Assigned to:"
+msgstr ""
+
+#: includes/shortcode.php:330 includes/functions.php:623
+msgid ""
+"WARNING: This will delete the selected task.\\n\\nChoose [Cancel] to Stop, "
+"[OK] to delete.\\n"
+msgstr ""
+
+#: includes/shortcode.php:330 includes/functions.php:623
+#: includes/functions.php:917
+msgid "delete"
+msgstr ""
+
+#: includes/shortcode.php:339 includes/functions.php:634
+#: includes/functions.php:1015
+msgid "No Tasks..."
+msgstr ""
+
+#: includes/shortcode.php:347 includes/functions.php:642
+msgid "Completed Tasks"
+msgstr ""
+
+#: includes/shortcode.php:410 includes/functions.php:688
+msgid "No Tasks Completed..."
+msgstr ""
+
+#: includes/functions.php:23 includes/functions.php:43
+#: includes/functions.php:66
+msgid "Back"
+msgstr ""
+
+#: includes/functions.php:31 includes/functions.php:51
+#: includes/functions.php:78
+msgid "Edit"
+msgstr ""
+
+#: includes/functions.php:74 includes/functions.php:98
+msgid "CollabPress Dashboard"
+msgstr ""
+
+#: includes/functions.php:78 includes/menus/debug.php:52
+msgid "Delete"
+msgstr ""
+
+#: includes/functions.php:94 includes/menus/dashboard.php:178
+msgid "Calendar"
+msgstr ""
+
+#: includes/functions.php:166
+msgid "Powered by "
+msgstr ""
+
+#: includes/functions.php:166
+msgid "CollabPress.org"
+msgstr ""
+
+#: includes/functions.php:179
+msgid "Project Added"
+msgstr ""
+
+#: includes/functions.php:183
+msgid "Project Updated"
+msgstr ""
+
+#: includes/functions.php:187
+msgid "Project Deleted"
+msgstr ""
+
+#: includes/functions.php:191
+msgid "Task List Added"
+msgstr ""
+
+#: includes/functions.php:195
+msgid "Task List Updated"
+msgstr ""
+
+#: includes/functions.php:199
+msgid "Task List Deleted"
+msgstr ""
+
+#: includes/functions.php:203
+msgid "Task Added"
+msgstr ""
+
+#: includes/functions.php:207
+msgid "Task Updated"
+msgstr ""
+
+#: includes/functions.php:211
+msgid "Task Deleted"
+msgstr ""
+
+#: includes/functions.php:215
+msgid "Comment Added"
+msgstr ""
+
+#: includes/functions.php:219
+msgid "Acitivity Log Has Been Cleared"
+msgstr ""
+
+#: includes/functions.php:226
+msgid "Activity"
+msgstr ""
+
+#: includes/functions.php:249
+msgid "View Calendar"
+msgstr ""
+
+#: includes/functions.php:328
+msgid "View All Users"
+msgstr ""
+
+#: includes/functions.php:365
+msgid "Click to Upload"
+msgstr ""
+
+#: includes/functions.php:389
+msgid "No file attachments..."
+msgstr ""
+
+#: includes/functions.php:453
+msgid "No Activities..."
+msgstr ""
+
+#: includes/functions.php:493 includes/functions.php:542
+#: includes/functions.php:718 includes/functions.php:753
+#: includes/functions.php:829 includes/functions.php:866
+msgid "Description: "
+msgstr ""
+
+#: includes/functions.php:502 includes/functions.php:551
+msgid "Due: "
+msgstr ""
+
+#: includes/functions.php:506 includes/functions.php:555
+msgid "Assigned to: "
+msgstr ""
+
+#: includes/functions.php:516
+msgid "Notify via Email? "
+msgstr ""
+
+#: includes/functions.php:522 includes/functions.php:568
+#: includes/functions.php:729 includes/functions.php:764
+#: includes/functions.php:840 includes/functions.php:877
+#: includes/functions.php:944 includes/menus/debug.php:109
+#: includes/menus/debug.php:112 includes/menus/debug.php:115
+#: includes/menus/debug.php:118 includes/menus/debug.php:121
+msgid "Submit"
+msgstr ""
+
+#: includes/functions.php:714 includes/functions.php:749
+#: includes/functions.php:825 includes/functions.php:862
+msgid "Name: "
+msgstr ""
+
+#: includes/functions.php:917
+msgid ""
+"WARNING: This will delete the selected comment.\\n\\nChoose [Cancel] to "
+"Stop, [OK] to delete.\\n"
+msgstr ""
+
+#: includes/functions.php:928
+msgid "No comments..."
+msgstr ""
+
+#: includes/functions.php:940
+msgid "Leave a Comment: "
+msgstr ""
+
+#: includes/functions.php:942
+msgid "Notify via Email?"
+msgstr ""
+
+#: includes/functions.php:964 includes/menus/dashboard.php:185
+msgid "Recent Activity"
+msgstr ""
+
+#: includes/functions.php:994
+msgid "No Recent Activity..."
+msgstr ""
+
+#: includes/functions.php:1012
+msgid " - View"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Sunday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Monday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Tuesday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Wednesday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Thursday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Friday"
+msgstr ""
+
+#: includes/functions.php:1068
+msgid "Saturday"
+msgstr ""
+
+#: includes/cp-widgets.php:33
+msgid "Title"
+msgstr ""
+
+#: includes/cp-widgets.php:34
+msgid "Show Project Count"
+msgstr ""
+
+#: includes/cp-widgets.php:35
+msgid "Show Task List Count"
+msgstr ""
+
+#: includes/cp-widgets.php:36
+msgid "Show Task Count"
+msgstr ""
+
+#: includes/cp-widgets.php:37
+msgid "Show User Count"
+msgstr ""
+
+#: includes/menus/settings.php:7 includes/menus/dashboard.php:75
+msgid "CollabPress Settings"
+msgstr ""
+
+#: includes/menus/settings.php:57
+msgid "General"
+msgstr ""
+
+#: includes/menus/settings.php:60
+msgid "Dashboard Meta Box"
+msgstr ""
+
+#: includes/menus/settings.php:63 includes/menus/settings.php:73
+#: includes/menus/settings.php:153
+msgid "Disabled"
+msgstr ""
+
+#: includes/menus/settings.php:64 includes/menus/settings.php:72
+#: includes/menus/settings.php:154
+msgid "Enabled"
+msgstr ""
+
+#: includes/menus/settings.php:69
+msgid "Email Notifications"
+msgstr ""
+
+#: includes/menus/settings.php:78
+msgid "Recent Activites Per Page"
+msgstr ""
+
+#: includes/menus/settings.php:95
+msgid "Number of Users to Display"
+msgstr ""
+
+#: includes/menus/settings.php:107
+msgid "Permissions"
+msgstr ""
+
+#: includes/menus/settings.php:110
+msgid "Minimum User Role for Access"
+msgstr ""
+
+#: includes/menus/settings.php:122
+msgid ""
+"Minimum User Role to change Settings, Edit/Delete data, Enable/View Debug, "
+"etc"
+msgstr ""
+
+#: includes/menus/settings.php:134
+msgid "Minimum User Role to view [collabpress] shortcode front-end"
+msgstr ""
+
+#: includes/menus/settings.php:147
+msgid "Advanced"
+msgstr ""
+
+#: includes/menus/settings.php:150
+msgid "Debug Mode"
+msgstr ""
+
+#: includes/menus/settings.php:159
+msgid "Save Settings"
+msgstr ""
+
+#: includes/menus/settings.php:166
+msgid "Optimize"
+msgstr ""
+
+#: includes/menus/settings.php:174
+msgid "Clear Activity Log"
+msgstr ""
+
+#: includes/menus/settings.php:175
+msgid ""
+"WARNING: This will delete ALL activity logs.  Once logs have been deleted "
+"they can NOT be restored.\\n\\nChoose [Cancel] to Stop, [OK] to delete logs."
+"\\n"
+msgstr ""
+
+#: includes/menus/isset/task-list.php:23 includes/menus/isset/project.php:18
+#: includes/menus/isset/task.php:38 includes/menus/isset/comment.php:51
+msgid "added"
+msgstr ""
+
+#: includes/menus/isset/task-list.php:23 includes/menus/isset/task-list.php:45
+msgid "task list"
+msgstr ""
+
+#: includes/menus/isset/task-list.php:45 includes/menus/isset/project.php:40
+#: includes/menus/isset/task.php:78
+msgid "updated"
+msgstr ""
+
+#: includes/menus/isset/project.php:18 includes/menus/isset/project.php:40
+#: includes/menus/isset/project.php:98
+msgid "project"
+msgstr ""
+
+#: includes/menus/isset/project.php:98 includes/menus/isset/task.php:129
+#: includes/menus/isset/comment.php:68
+msgid "deleted"
+msgstr ""
+
+#: includes/menus/isset/task.php:38 includes/menus/isset/task.php:78
+#: includes/menus/isset/task.php:101 includes/menus/isset/task.php:109
+#: includes/menus/isset/task.php:129
+msgid "task"
+msgstr ""
+
+#: includes/menus/isset/task.php:101
+msgid "completed"
+msgstr ""
+
+#: includes/menus/isset/task.php:109
+msgid "opened"
+msgstr ""
+
+#: includes/menus/isset/comment.php:51 includes/menus/isset/comment.php:68
+msgid "comment"
+msgstr ""
+
+#: includes/menus/debug.php:10
+msgid "Title: "
+msgstr ""
+
+#: includes/menus/debug.php:12
+msgid "ID: "
+msgstr ""
+
+#: includes/menus/debug.php:14
+msgid "Author: "
+msgstr ""
+
+#: includes/menus/debug.php:16
+msgid "Created: "
+msgstr ""
+
+#: includes/menus/debug.php:16 includes/menus/debug.php:18
+msgid "at"
+msgstr ""
+
+#: includes/menus/debug.php:18
+msgid "Modified: "
+msgstr ""
+
+#: includes/menus/debug.php:30
+msgid "name: "
+msgstr ""
+
+#: includes/menus/debug.php:42
+msgid "No results..."
+msgstr ""
+
+#: includes/menus/debug.php:50
+msgid "CollabPress Debug"
+msgstr ""
+
+#: includes/menus/debug.php:109
+msgid "cp-debug-delete-all"
+msgstr ""
+
+#: includes/menus/debug.php:112
+msgid "cp-debug-delete-projects"
+msgstr ""
+
+#: includes/menus/debug.php:115
+msgid "cp-debug-delete-task-lists"
+msgstr ""
+
+#: includes/menus/debug.php:118
+msgid "cp-debug-delete-tasks"
+msgstr ""
+
+#: includes/menus/debug.php:121
+msgid "cp-debug-delete-meta-data"
+msgstr ""
+
+#: includes/menus/debug.php:127
+msgid "All Projects"
+msgstr ""
+
+#: includes/menus/debug.php:143
+msgid "All Task Lists"
+msgstr ""
+
+#: includes/menus/debug.php:175
+msgid "All Meta"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "CollabPress"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "Please Report Bugs"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "Follow us on Twitter:"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "Scott"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "Brad"
+msgstr ""
+
+#: includes/menus/footer.php:2
+msgid "WDS"
+msgstr ""
+
+#: includes/menus/help.php:7 includes/menus/dashboard.php:78
+msgid "CollabPress Help"
+msgstr ""
+
+#: includes/menus/help.php:8
+msgid "Shortcode Legend"
+msgstr ""
+
+#: includes/menus/help.php:9
+msgid ""
+"Add full CollabPress support to the front-end of WordPress.  View/edit/"
+"delete all projects, task-lists, tasks, and comments."
+msgstr ""
+
+#: includes/menus/help.php:11
+msgid "Support and Info"
+msgstr ""
+
+#: includes/menus/help.php:12
+msgid "Follow on Twitter"
+msgstr ""
+
+#: includes/menus/help.php:12
+msgid "Subscribe via Email"
+msgstr ""
+
+#: includes/menus/help.php:13
+msgid "Donate"
+msgstr ""
+
+#: includes/menus/help.php:22
+msgid "Latest CollabPress News"
+msgstr ""
+
+#: includes/menus/help.php:28
+msgid "CollabPress News"
+msgstr ""
+
+#: includes/menus/dashboard.php:75
+msgid "Settings"
+msgstr ""
+
+#: includes/menus/dashboard.php:78
+msgid "Help"
+msgstr ""
+
+#: includes/menus/dashboard.php:81
+msgid "Debug"
+msgstr ""
+
+#: includes/menus/dashboard.php:180
+msgid "Users"
+msgstr ""
+
+#: includes/menus/dashboard.php:181
+msgid "Overview"
+msgstr ""
+
+#: includes/menus/dashboard.php:186
+msgid "Add New Project"
+msgstr ""
+
+#: includes/menus/dashboard.php:187 includes/menus/dashboard.php:198
+msgid "Edit Project"
+msgstr ""
+
+#: includes/menus/dashboard.php:193
+msgid "Add New Task List"
+msgstr ""
+
+#: includes/menus/dashboard.php:194
+msgid "Edit Task List"
+msgstr ""
+
+#: includes/menus/dashboard.php:195
+msgid "Project Overview"
+msgstr ""
+
+#: includes/menus/dashboard.php:197 includes/menus/dashboard.php:208
+#: includes/menus/dashboard.php:216
+msgid "Files"
+msgstr ""
+
+#: includes/menus/dashboard.php:204
+msgid "Add New Task"
+msgstr ""
+
+#: includes/menus/dashboard.php:205 includes/menus/dashboard.php:214
+msgid "Edit Task"
+msgstr ""
+
+#: includes/menus/dashboard.php:206
+msgid "Task List Overview"
+msgstr ""
+
+#: includes/menus/dashboard.php:220
+msgid "Credits"
+msgstr ""
+
+#: includes/menus/dashboard.php:300
+msgid "Cheatin&#8217; uh?"
+msgstr ""

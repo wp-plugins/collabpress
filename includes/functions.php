@@ -9,6 +9,7 @@ function cp_get_page_title() {
 	global $cp_task_page;
 	global $cp_user_page;
 	global $cp_calendar_page;
+	global $cp_view_projects;
 	
 	global $cp_project;
 	global $cp_task_list;
@@ -93,6 +94,10 @@ function cp_get_page_title() {
 	elseif ( $cp_calendar_page ) :
 		$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').__('Calendar', 'collabpress').'</h2>';
 		
+	// View All Projects
+	elseif ( $cp_view_projects ) :
+		$dashboardTitle = '<h2>'.cp_screen_icon('collabpress').__('View All Projects', 'collabpress').'</h2>';
+		
 	// Dashboard
 	else :
 		$dashboardTitle = '<h2><a title="'.__('CollabPress Dashboard', 'collabpress').'" href="'.CP_DASHBOARD.'">'.cp_screen_icon('collabpress').__('CollabPress Dashboard', 'collabpress').'</a></h2>';
@@ -110,6 +115,7 @@ function cp_get_breadcrumb() {
 	global $cp_task_page;
 	global $cp_user_page;
 	global $cp_calendar_page;
+	global $cp_view_projects;
 
 	global $cp_project;
 	global $cp_task_list;
@@ -257,7 +263,7 @@ function cp_projects() {
 	get_currentuserinfo();
 
 	// Get Projects
-	$projects_args = array( 'post_type' => 'cp-projects' );
+	$projects_args = array( 'post_type' => 'cp-projects', 'showposts' => '-1' );
 	$projects_query = new WP_Query( $projects_args );
 	
 	// WP_Query();
@@ -285,6 +291,9 @@ function cp_projects() {
 	else :
 		echo '<p>'.__( 'No Projects...', 'collabpress' ).'</p>';
 	endif;
+	
+	echo '<p><a class="button" title="'.__('View All Projects', 'collabpress').'" href="'.CP_DASHBOARD.'&view-projects=1">'.__('View All Projects', 'collabpress').'</a></p>';
+	
 }
 
 // List CollabPress Users
@@ -1149,6 +1158,47 @@ function cp_draw_calendar($month = NULL, $year = NULL) {
 	echo $calendar;
 	
 	echo '</div>';
+}
+
+// View All Projects
+function cp_view_all_projects() {
+	
+	// Get Current User
+	global $current_user;
+	get_currentuserinfo();
+
+	echo '<h4 class="cp-no-margin">'.__('All Projects', 'collabpress').'</h4>';
+
+	// Get Projects
+	$projects_args = array( 'post_type' => 'cp-projects', 'showposts' => '-1' );
+	$projects_query = new WP_Query( $projects_args );
+	
+	// WP_Query();
+	if ( $projects_query->have_posts() ) :
+	    while( $projects_query->have_posts() ) : $projects_query->the_post();
+
+		//generate delete project link
+		$cp_del_link = CP_DASHBOARD .'&cp-delete-project-id='.get_the_ID();
+		$cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_project' ) : $cp_del_link;
+
+		//generate edit project link
+		$cp_edit_link = CP_DASHBOARD.'&project='.get_the_ID().'&view=edit';
+
+		echo '<p><a href="'.CP_DASHBOARD.'&project='.get_the_ID().'">'.get_the_title().'</a>';
+
+		//check if user can view edit/delete links
+		if ( cp_check_permissions( 'settings_user_role' ) ) {
+		    echo ' - <a href="' .$cp_edit_link. '">' .__( 'edit', 'collabpress'). '</a> &middot; <a href="' .$cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected project, including ALL task lists and tasks in the project.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">delete</a></p>';
+		}
+		
+	    endwhile;
+	    wp_reset_query();
+	
+	// No Results
+	else :
+		echo '<p>'.__( 'No Projects...', 'collabpress' ).'</p>';
+	endif;
+	
 }
 
 // Display Icon

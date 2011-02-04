@@ -103,6 +103,11 @@ td.calendar-day-head { background:#F5F5F5; font-weight:bold; text-align:center; 
 div.day-number { background:#f1f1f1; padding:5px; color:#21759B; font-weight:bold; float:right; margin:-5px -5px 0 0; width:20px; text-align:center; }
 td.calendar-day, td.calendar-day-np { width:120px; padding:5px; border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1; }
 
+/* View All Projects */
+.cp-no-margin {
+	margin: 0;
+}
+
 /* Comments */
 #cp_task_comments_wrap {
 	background: #ffffff;
@@ -231,6 +236,7 @@ td.calendar-day, td.calendar-day-np { width:120px; padding:5px; border-bottom:1p
     z-index: 7;
     margin-left: -10px;
 	}
+	
 /* Footer */
 .cp_about {
 	text-align: center;

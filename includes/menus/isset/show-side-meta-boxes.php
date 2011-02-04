@@ -6,6 +6,7 @@ global $cp_task_list_page;
 global $cp_task_page;
 global $cp_user_page;
 global $cp_calendar_page;
+global $cp_view_projects;
 
 global $cp_project;
 global $cp_task_list;
@@ -52,6 +53,10 @@ elseif ( $cp_user_page ) :
 
 // Calendar Page
 elseif ( $cp_calendar_page ) :
+	do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
+	
+// View All Projects Page
+elseif ( $cp_view_projects ) :
 	do_meta_boxes($this->pagehook, 'collabpress-side', NULL);
 
 // Dashboard Page	

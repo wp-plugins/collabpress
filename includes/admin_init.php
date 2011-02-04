@@ -18,6 +18,14 @@ function cp_admin_init() {
 	wp_register_script('cp_post', CP_PLUGIN_URL . 'includes/js/cp_post.js');
 	wp_register_script('cp_fancybox', CP_PLUGIN_URL . 'includes/tools/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'));	
 }
+
+// Add Translation
+add_action( 'init', 'cp_translation' );
+function cp_translation() {
+	load_plugin_textdomain( 'collabpress', false, basename( dirname( dirname( __FILE__ ) ) ) . '/languages' );
+}
+
+// Frontend Init
 add_action( 'init', 'cp_frontend_init' );
 function cp_frontend_init() {
 	// Register Styles
@@ -73,36 +81,40 @@ function collabpress_init() {
 
 	// Projects
 	$args_projects = array('label' => 'Projects',
-							'description' => 'Custom Post Type for Collabpress Projects',
-							'public' => $cp_debug_mode,
-							'supports' => array('title','author','thumbnail','comments','custom-fields')
-							);
+								'description' => 'Custom Post Type for CollabPress Projects',
+								'public' => $cp_debug_mode,
+								'supports' => array('title','author','thumbnail','comments','custom-fields'),
+								'exclude_from_search' => true
+								);
 	// Register Projects Custom Post Type
 	register_post_type( 'cp-projects', $args_projects );
 
 	// Task Lists
 	$args_task_lists = array('label' => 'Task Lists',
-							'description' => 'Custom Post Type for Collabpress Task Lists',
-							'public' => $cp_debug_mode,
-							'supports' => array('title','author','thumbnail','comments','custom-fields')
-							);
+								'description' => 'Custom Post Type for CollabPress Task Lists',
+								'public' => $cp_debug_mode,
+								'supports' => array('title','author','thumbnail','comments','custom-fields'),
+								'exclude_from_search' => true
+								);
 	// Register Projects Custom Post Type
 	register_post_type( 'cp-task-lists', $args_task_lists );
 
 	// Tasks
 	$args_tasks = array('label' => 'Tasks',
-							'description' => 'Custom Post Type for Collabpress Tasks',
+							'description' => 'Custom Post Type for CollabPress Tasks',
 							'public' => $cp_debug_mode,
-							'supports' => array('title','author','thumbnail','comments','custom-fields')
+							'supports' => array('title','author','thumbnail','comments','custom-fields'),
+							'exclude_from_search' => true
 							);
 	// Register Projects Custom Post Type
 	register_post_type( 'cp-tasks', $args_tasks );
 	
 	// Meta Data
 	$args_tasks = array('label' => 'Meta Data',
-							'description' => 'Custom Post Type for Collabpress Meta Data',
+							'description' => 'Custom Post Type for CollabPress Meta Data',
 							'public' => $cp_debug_mode,
-							'supports' => array('title','author','thumbnail','comments','custom-fields')
+							'supports' => array('title','author','thumbnail','comments','custom-fields'),
+							'exclude_from_search' => true
 							);
 	// Register CollabPress Meta Data
 	register_post_type( 'cp-meta-data', $args_tasks );

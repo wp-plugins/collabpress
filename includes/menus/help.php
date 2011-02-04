@@ -1,6 +1,6 @@
 <?php
 //verify user has permission to view help
-//if ( cp_check_permissions( 'settings_user_role' ) ) { //show to subscriber+ role for now
+if ( cp_check_permissions( 'settings_user_role' ) ) {
 ?>
     <div id="collabpress-wrap" class="wrap">
 	<?php echo cp_screen_icon( 'collabpress' ); ?>
@@ -37,5 +37,5 @@
 <?php
     echo '<hr />';
     cp_footer();
-//}
+}
 ?>

@@ -6,6 +6,7 @@ global $cp_task_list_page;
 global $cp_task_page;
 global $cp_user_page;
 global $cp_calendar_page;
+global $cp_view_projects;
 global $cp_all_users_page;
 
 if ( $cp_project_page || $cp_task_list_page || $cp_task_page ) :
@@ -54,6 +55,10 @@ elseif ( $cp_all_users_page ) :
 // Calendar Page
 elseif ( $cp_calendar_page ) :
 	cp_draw_calendar();
+	
+// View All Projects Page
+elseif ( $cp_view_projects ) :
+	cp_view_all_projects();
 
 // Dashboard Page	
 else :

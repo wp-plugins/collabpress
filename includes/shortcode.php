@@ -171,7 +171,7 @@ function cp_sc_projects( $id ) {
     else :
 
     // Get Projects
-    $projects_args = array( 'post_type' => 'cp-projects', 'p' => absint( $id ) );
+    $projects_args = array( 'post_type' => 'cp-projects', 'p' => absint( $id ), 'showposts' => '-1' );
     $projects_query = new WP_Query( $projects_args );
 
     // WP_Query();
