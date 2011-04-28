@@ -102,10 +102,16 @@ Works with WordPress and Multisite
 == Upgrade Notice ==
 
 = 1.1.3 =
-* Various bug fixes
+* Fixed JS conflict with WordPress navigation menus
+* Fixed WP nonce bug when adding a project/task list or task
+* Added https with is_ssl() for Google jQuery API
 
 = 1.1.2 =
-* Various bug fixes
+* Fixed bug showing help menu to all users
+* Exclude custom post type content from search
+* Fixed bug to only show recent five projects
+* Created a dedicated project page to view all projects
+* Added translation file for internationalization support
 
 = 1.1.1 =
 * Fixed front-end shortcode viewing bug
