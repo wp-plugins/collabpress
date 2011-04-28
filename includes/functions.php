@@ -493,7 +493,7 @@ function cp_add_task($data = NULL) {
     // WP_Query();
     while( $task_list_query->have_posts() ) : $task_list_query->the_post();
 		
-		echo '<form action="" method="post">';
+		echo '<form action="'.cp_clean_querystring().'" method="post">';
 			wp_nonce_field('cp-add-task');
 			?>
 			<table class="form-table">
@@ -714,7 +714,7 @@ function cp_add_task_list() {
 	// WP_Query();
     while( $project_query->have_posts() ) : $project_query->the_post();
 
-		echo '<form action="" method="post">';
+		echo '<form action="'.cp_clean_querystring().'" method="post">';
 			wp_nonce_field('cp-add-task-list');
 			?>
 			<table class="form-table">
@@ -825,7 +825,7 @@ function cp_add_project() {
 	get_currentuserinfo();
 	
 	// Add Project Form
-	echo '<form action="" method="post">';
+	echo '<form action="'.cp_clean_querystring().'" method="post">';
 		wp_nonce_field('cp-add-project');
 		?>
 		<table class="form-table">
@@ -943,7 +943,7 @@ function cp_task_comments() {
 	$options = get_option('cp_options');
         $checked = ( $options['email_notifications'] == 'enabled' ) ? 'checked="checked"' : null;
 
-	echo '<form action="" method="post">';
+	echo '<form action="'.cp_clean_querystring().'" method="post">';
 		wp_nonce_field('cp-add-comment');
 		?>
 		<p><label for="cp-comment-content"><?php _e('Leave a Comment: ', 'collabpress') ?></label></p>
@@ -1291,4 +1291,22 @@ function cp_check_permissions( $type = NULL ) {
 
     return false;
     
+}
+
+// Clean Querystring
+function cp_clean_querystring() {
+	$cp_cleaned_querystring = $_SERVER['REQUEST_URI'];
+	parse_str($_SERVER['QUERY_STRING'], $cp_querystring);
+	foreach ($cp_querystring as $key => $cp_cleaned_query_key) {
+		$cp_clean_query_array = array(
+			'cp-delete-project-id',
+			'cp-delete-task-list-id',
+			'cp-delete-task-id',
+			'cp-delete-comment-id',
+			'_wpnonce'
+		);
+		if (in_array($key, $cp_clean_query_array))
+			$cp_cleaned_querystring = remove_query_arg($key, $cp_cleaned_querystring);
+	}
+	return $cp_cleaned_querystring;
 }

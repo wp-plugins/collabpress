@@ -71,24 +71,60 @@ class collabpress_dashboard_page {
 		$this->pagehook = add_menu_page( 'CollabPress Dashboard', 'CollabPress', $cp_user_role, COLLABPRESS_DASHBOARD_PAGE, array( &$this, 'on_show_page' ), CP_PLUGIN_URL .'includes/images/collabpress-menu-icon.png' );
 		// Call Back
 		add_action('load-'.$this->pagehook, array(&$this, 'on_load_page'));
+		add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
+		add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
 
 		//add settings submenu item
-		add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Settings', 'collabpress' ), __( 'Settings', 'collabpress' ), $cp_settings_user_role, 'collabpress-settings', 'cp_settings_page' );
+		$cp_settings_page_hook = add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Settings', 'collabpress' ), __( 'Settings', 'collabpress' ), $cp_settings_user_role, 'collabpress-settings', 'cp_settings_page' );
+		add_action('admin_print_styles-' . $cp_settings_page_hook, array(&$this, 'cp_admin_styles'));
+		add_action('admin_print_scripts-' . $cp_settings_page_hook, array(&$this, 'cp_admin_scripts'));
 
 		//add help submenu item
-		add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Help', 'collabpress' ), __( 'Help', 'collabpress' ), $cp_settings_user_role, 'collabpress-help', 'cp_help_page' );
+		$cp_help_page_hook = add_submenu_page( COLLABPRESS_DASHBOARD_PAGE, __( 'CollabPress Help', 'collabpress' ), __( 'Help', 'collabpress' ), $cp_settings_user_role, 'collabpress-help', 'cp_help_page' );
+		add_action('admin_print_styles-' . $cp_help_page_hook, array(&$this, 'cp_admin_styles'));
+		add_action('admin_print_scripts-' . $cp_help_page_hook, array(&$this, 'cp_admin_scripts'));
 
 		if ( $cp_debug_mode ) :
-		    add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Debug', 'collabpress'), __('Debug', 'collabpress'), $cp_settings_user_role, 'collabpress-debug', 'cp_debug_page');
-		    add_action('admin_print_styles-' . $this->pagehook, array(&$this, 'cp_admin_styles'));
-		    add_action('admin_print_scripts-' . $this->pagehook, array(&$this, 'cp_admin_scripts'));
+		    $cp_debug_page_hook = add_submenu_page(COLLABPRESS_DASHBOARD_PAGE, __('Debug', 'collabpress'), __('Debug', 'collabpress'), $cp_settings_user_role, 'collabpress-debug', 'cp_debug_page');
+		    add_action('admin_print_styles-' . $cp_debug_page_hook, array(&$this, 'cp_admin_styles'));
+		    add_action('admin_print_scripts-' . $cp_debug_page_hook, array(&$this, 'cp_admin_scripts'));
 		endif;
 	}
 	
 	function cp_admin_styles() {
+		// Register Styles
+		wp_register_style('cp_admin', CP_PLUGIN_URL . 'includes/css/admin.css');
+		if ( is_ssl() )
+			wp_register_style('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+		else
+			wp_register_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+		wp_register_style('cp_fancybox', CP_PLUGIN_URL . 'includes/tools/fancybox/jquery.fancybox-1.3.4.css');
+		
+		wp_enqueue_style('cp_admin');
+		wp_enqueue_style('jquery-ui');
+		wp_enqueue_style('thickbox');
+		wp_enqueue_style('cp_fancybox');
 	}
 	
 	function cp_admin_scripts() {
+		// Register Scripts
+		wp_register_script('cp_admin', CP_PLUGIN_URL . 'includes/js/admin.js');
+		if ( is_ssl() )
+			wp_register_script('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js');
+		else
+			wp_register_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js');
+		wp_register_script('cp_upload', CP_PLUGIN_URL . 'includes/js/cp_uploader.js', array('jquery','media-upload','thickbox'));
+		wp_register_script('cp_post', CP_PLUGIN_URL . 'includes/js/cp_post.js');
+		wp_register_script('cp_fancybox', CP_PLUGIN_URL . 'includes/tools/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'));
+		
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('cp_admin');
+		wp_enqueue_script('jquery-ui');
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('thickbox');
+		wp_enqueue_script('cp_upload');
+		wp_enqueue_script('cp_post');
+		wp_enqueue_script('cp_fancybox');
 	}
 	
 	// Before Render

@@ -2,9 +2,9 @@
 Contributors: WDS-Scott, williamsba1, cochran
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
 Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget
-Requires at least: 2.9
-Tested up to: 3.1
-Stable tag: 1.1.2
+Requires at least: 3.0
+Tested up to: 3.1.2
+Stable tag: 1.1.3
 
 Project management and task tracking software for WordPress
 
@@ -34,6 +34,11 @@ Works with WordPress and Multisite
 5. Shortcode support example
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixed JS conflict with WordPress navigation menus
+* Fixed WP nonce bug when adding a project/task list or task
+* Added https with is_ssl() for Google jQuery API
 
 = 1.1.2 =
 * Fixed bug showing help menu to all users
@@ -95,6 +100,9 @@ Works with WordPress and Multisite
 * First beta release
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+* Various bug fixes
 
 = 1.1.2 =
 * Various bug fixes
