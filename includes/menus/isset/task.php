@@ -19,15 +19,29 @@ if ( isset( $_POST['cp-add-task'] ) && isset($_POST['cp-task']) ) :
 	//add task status
 	update_post_meta( $task_id, '_cp-task-status', 'open' );
 
-	if ( isset($_GET['project']) || $cp_bp_integration->get_current_item_project() ) {
-		if ( !$project_id = $cp_bp_integration->get_current_item_project() )
-			$project_id = $cp_project->id;
+	// Where we get the project_id from depends on whether this is a BP installation
+	if ( isset( $_GET['project'] ) ) {
+		$project_id = $cp_project->id;
+	} else if ( is_object( $cp_bp_integration ) && method_exists( $cp_bp_integration, 'get_current_item_project' ) ) {
+		$project_id = $cp_bp_integration->get_current_item_project();
+	} else {
+		$project_id = NULL;
+	}
+
+	if ( $project_id ) {
 		update_post_meta( $task_id, '_cp-project-id', $project_id );
 	}
 
-	if ( isset($_GET['task-list']) || $cp_bp_integration->get_current_item_task_list() ) {
-		if ( !$task_list_id = $cp_bp_integration->get_current_item_task_list() )
-			$task_list_id = $cp_task_list->id;
+	// Where we get the task list from depends on whether this is a BP installation
+	if ( isset( $_GET['task-list'] ) ) {
+		$task_list_id = $cp_task_list->id;
+	} else if ( is_object( $cp_bp_integration ) && method_exists( $cp_bp_integration, 'get_current_item_task_list' ) ) {
+		$task_list_id = $cp_bp_integration->get_current_item_task_list();
+	} else {
+		$task_list_id = NULL;
+	}
+
+	if ( $task_list_id ) {
 		update_post_meta( $task_id, '_cp-task-list-id', $task_list_id );
 	}
 

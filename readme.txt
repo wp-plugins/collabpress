@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget, multisite, buddypress
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.2
+Stable tag: 1.2.1
 
 Project management and task tracking software for WordPress
 
@@ -36,6 +36,9 @@ Works with WordPress, Multisite, and BuddyPress!
 6. BuddyPress Group integration
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed bug when adding tasks without BuddyPress installed
 
 = 1.2 =
 * BuddyPress Group integration ( requires BP v1.5+ )
@@ -109,6 +112,9 @@ Works with WordPress, Multisite, and BuddyPress!
 * First beta release
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+* Fixed bug when adding tasks without BuddyPress installed
 
 = 1.2 =
 * BuddyPress Group integration ( requires BP v1.5+ )
