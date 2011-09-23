@@ -28,7 +28,7 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
             foreach ( $custom_fields as $field_key => $field_values ) {
                 foreach ( $field_values as $key => $value ) {
                     echo '<p style="font-weight:bold; color: blue;">'.__('name: ', 'collabpress'). $field_key . '</strong></p>';
-                    echo '<p><strong>value</strong>: '. $value . '</p>';
+                    echo '<p><strong>'.__('value', 'collabpress').'</strong>: '. $value . '</p>';
                 }
             }
 
@@ -105,20 +105,20 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
 
         <form method="post">
             <input type="hidden" name="cp-delete-data" />
-            <label for="cp-debug-delete-all">Delete All CollabPress Data: </label>
-            <input type="submit" name="<?php _e('cp-debug-delete-all', 'collabpress') ?>" value="<?php _e('Submit', 'collabpress') ?>" />
+            <label for="cp-debug-delete-all"><?php _e('Delete All CollabPress Data: ', 'collabpress'); ?></label>
+            <input type="submit" name="cp-debug-delete-all" value="<?php _e('Submit', 'collabpress') ?>" />
             <br /><br />
-            <label for="cp-debug-delete-all">Delete CollabPress Projects: </label>
-            <input type="submit" name="<?php _e('cp-debug-delete-projects', 'collabpress') ?>" value="<?php _e('Submit', 'collabpress') ?>" />
+            <label for="cp-debug-delete-all"><?php _e('Delete CollabPress Projects: ', 'collabpress'); ?></label>
+            <input type="submit" name="cp-debug-delete-projects" value="<?php _e('Submit', 'collabpress') ?>" />
             <br /><br />
-            <label for="cp-debug-delete-all">Delete CollabPress Task Lists: </label>
-            <input type="submit" name="<?php _e('cp-debug-delete-task-lists', 'collabpress') ?>" value="<?php _e('Submit', 'collabpress') ?>" />
+            <label for="cp-debug-delete-all"><?php _e('Delete CollabPress Task Lists: ', 'collabpress'); ?></label>
+            <input type="submit" name="cp-debug-delete-task-lists" value="<?php _e('Submit', 'collabpress') ?>" />
             <br /><br />
-            <label for="cp-debug-delete-all">Delete CollabPress Tasks: </label>
-            <input type="submit" name="<?php _e('cp-debug-delete-tasks', 'collabpress') ?>" value="<?php _e('Submit', 'collabpress') ?>" />
+            <label for="cp-debug-delete-all"><?php _e('Delete CollabPress Tasks: ', 'collabpress'); ?></label>
+            <input type="submit" name="cp-debug-delete-tasks" value="<?php _e('Submit', 'collabpress') ?>" />
             <br /><br />
-            <label for="cp-debug-delete-all">Delete CollabPress Meta Data: </label>
-            <input type="submit" name="<?php _e('cp-debug-delete-meta-data', 'collabpress') ?>" value="<?php _e('Submit', 'collabpress') ?>" />
+            <label for="cp-debug-delete-all"><?php _e('Delete CollabPress Meta Data: ', 'collabpress'); ?></label>
+            <input type="submit" name="cp-debug-delete-meta-data" value="<?php _e('Submit', 'collabpress') ?>" />
         </form>
 
         <br />

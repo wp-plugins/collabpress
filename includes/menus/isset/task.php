@@ -2,6 +2,7 @@
 
 global $cp_project;
 global $cp_task_list;
+global $cp_bp_integration;
 
 // Add Task
 if ( isset( $_POST['cp-add-task'] ) && isset($_POST['cp-task']) ) :
@@ -18,10 +19,18 @@ if ( isset( $_POST['cp-add-task'] ) && isset($_POST['cp-task']) ) :
 	//add task status
 	update_post_meta( $task_id, '_cp-task-status', 'open' );
 
-	if ( isset($_GET['project']) )
-		update_post_meta( $task_id, '_cp-project-id', $cp_project->id );
-	if ( isset($_GET['task-list']) )
-		update_post_meta( $task_id, '_cp-task-list-id', $cp_task_list->id );
+	if ( isset($_GET['project']) || $cp_bp_integration->get_current_item_project() ) {
+		if ( !$project_id = $cp_bp_integration->get_current_item_project() )
+			$project_id = $cp_project->id;
+		update_post_meta( $task_id, '_cp-project-id', $project_id );
+	}
+
+	if ( isset($_GET['task-list']) || $cp_bp_integration->get_current_item_task_list() ) {
+		if ( !$task_list_id = $cp_bp_integration->get_current_item_task_list() )
+			$task_list_id = $cp_task_list->id;
+		update_post_meta( $task_id, '_cp-task-list-id', $task_list_id );
+	}
+
 	if ( isset($_POST['cp-task-due']) ) :
 		// Validate Date
 		if ( cp_validate_date($_POST['cp-task-due']) ) :
@@ -31,12 +40,19 @@ if ( isset( $_POST['cp-add-task'] ) && isset($_POST['cp-task']) ) :
 		endif;
 		update_post_meta( $task_id, '_cp-task-due', $taskDate );
 	endif;
+
+	//save the user assignment
 	if ( isset($_POST['cp-task-assign']) )
 		update_post_meta( $task_id, '_cp-task-assign', absint($_POST['cp-task-assign']) );
-	
+
+	//save the task priority
+	if ( isset($_POST['cp-task-priority']) )
+		update_post_meta( $task_id, '_cp-task-priority', strip_tags($_POST['cp-task-priority']) );
+
 	// Add Activity
 	cp_add_activity(__('added', 'collabpress'), __('task', 'collabpress'), $current_user->ID, $task_id);
 
+	do_action( 'cp_task_added', $task_id );
 
 	//check if email notification is checked
 	if( isset( $_POST['notify'] ) ) {
@@ -45,9 +61,9 @@ if ( isset( $_POST['cp-add-task'] ) && isset($_POST['cp-task']) ) :
 	    $task_author_data = get_userdata( absint( $_POST['cp-task-assign'] ) );
 	    $author_email = $task_author_data->user_email;
 
-	    $subject = 'New task assigned to you: ' .get_the_title( $task_id );
+	    $subject = __('New task assigned to you: ', 'collabpress') .get_the_title( $task_id );
 
-	    $message = "There is a new task assigned to you: \n\n";
+	    $message = __('There is a new task assigned to you:', 'collabpress') . "\n\n";
 	    $message .= esc_html( $_POST['cp-task'] );
 
 	    cp_send_email( $author_email, $subject, $message );
@@ -73,9 +89,12 @@ if ( isset( $_POST['cp-edit-task'] ) && isset($_POST['cp-edit-task-id']) ) :
 	wp_update_post( $task );
 	update_post_meta( $taskID, '_cp-task-due', esc_html($_POST['cp-task-due']) );
 	update_post_meta( $taskID, '_cp-task-assign', absint($_POST['cp-task-assign']) );
-	
+	update_post_meta( $taskID, '_cp-task-priority', strip_tags($_POST['cp-task-priority']) );
+
 	// Add Activity
 	cp_add_activity(__('updated', 'collabpress'), __('task', 'collabpress'), $current_user->ID, $taskID);
+
+	do_action( 'cp_task_edited', $taskID );
 
     }
 
@@ -100,6 +119,8 @@ if ( isset( $_GET['cp-complete-task-id'] ) ) :
 	// Add Activity
 	cp_add_activity(__('completed', 'collabpress'), __('task', 'collabpress'), $current_user->ID, $taskID );
 
+	do_action( 'cp_task_completed', $taskID );
+
     }elseif ($taskID ) {
 
 	//open the task
@@ -107,6 +128,8 @@ if ( isset( $_GET['cp-complete-task-id'] ) ) :
 
 	// Add Activity
 	cp_add_activity(__('opened', 'collabpress'), __('task', 'collabpress'), $current_user->ID, $taskID );
+
+	do_action( 'cp_task_reopened', $taskID );
 
     }
 
@@ -122,11 +145,13 @@ if ( isset( $_GET['cp-delete-task-id'] ) ) :
 
 	$cp_task_id = absint( $_GET['cp-delete-task-id'] );
 
-	//delete the task list
-	wp_delete_post( $cp_task_id, true );
+	//delete the task
+	wp_trash_post( $cp_task_id, true );
 
 	//add activity log
 	cp_add_activity(__('deleted', 'collabpress'), __('task', 'collabpress'), $current_user->ID, $cp_task_id );
+
+	do_action( 'cp_task_deleted', $cp_task_id );
 
     }
 

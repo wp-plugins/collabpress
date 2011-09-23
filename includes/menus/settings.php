@@ -110,11 +110,11 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                     <th scope="row"><label for="user_role"><?php _e( 'Minimum User Role for Access', 'collabpress' ); ?></label></th>
                     <td>
                         <select name="cp_options[user_role]">
-                            <option value="manage_options" <?php selected( $cp_user_role, 'manage_options' ); ?>>Administrator</option>
-                            <option value="delete_others_posts" <?php selected( $cp_user_role, 'delete_others_posts' ); ?>>Editor</option>
-                            <option value="publish_posts" <?php selected( $cp_user_role, 'publish_posts' ); ?>>Author</option>
-                            <option value="edit_posts" <?php selected( $cp_user_role, 'edit_posts' ); ?>>Contributor</option>
-                            <option value="read" <?php selected( $cp_user_role, 'read' ); ?>>Subscriber</option>
+                            <option value="manage_options" <?php selected( $cp_user_role, 'manage_options' ); ?>><?php _e('Administrator', 'collabpress'); ?></option>
+                            <option value="delete_others_posts" <?php selected( $cp_user_role, 'delete_others_posts' ); ?>><?php _e('Editor', 'collabpress'); ?></option>
+                            <option value="publish_posts" <?php selected( $cp_user_role, 'publish_posts' ); ?>><?php _e('Author', 'collabpress'); ?></option>
+                            <option value="edit_posts" <?php selected( $cp_user_role, 'edit_posts' ); ?>><?php _e('Contributor', 'collabpress'); ?></option>
+                            <option value="read" <?php selected( $cp_user_role, 'read' ); ?>><?php _e('Subscriber', 'collabpress'); ?></option>
                         </select>
                     </td>
                 </tr>
@@ -122,11 +122,11 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                     <th scope="row"><label for="settings_user_role"><?php _e( 'Minimum User Role to change Settings, Edit/Delete data, Enable/View Debug, etc', 'collabpress' ); ?></label></th>
                     <td>
                         <select name="cp_options[settings_user_role]">
-                            <option value="manage_options" <?php selected( $cp_settings_user_role, 'manage_options' ); ?>>Administrator</option>
-                            <option value="delete_others_posts" <?php selected( $cp_settings_user_role, 'delete_others_posts' ); ?>>Editor</option>
-                            <option value="publish_posts" <?php selected( $cp_settings_user_role, 'publish_posts' ); ?>>Author</option>
-                            <option value="edit_posts" <?php selected( $cp_settings_user_role, 'edit_posts' ); ?>>Contributor</option>
-                            <option value="read" <?php selected( $cp_settings_user_role, 'read' ); ?>>Subscriber</option>
+                            <option value="manage_options" <?php selected( $cp_settings_user_role, 'manage_options' ); ?>><?php _e('Administrator', 'collabpress'); ?></option>
+                            <option value="delete_others_posts" <?php selected( $cp_settings_user_role, 'delete_others_posts' ); ?>><?php _e('Editor', 'collabpress'); ?></option>
+                            <option value="publish_posts" <?php selected( $cp_settings_user_role, 'publish_posts' ); ?>><?php _e('Author', 'collabpress'); ?></option>
+                            <option value="edit_posts" <?php selected( $cp_settings_user_role, 'edit_posts' ); ?>><?php _e('Contributor', 'collabpress'); ?></option>
+                            <option value="read" <?php selected( $cp_settings_user_role, 'read' ); ?>><?php _e('Subscriber', 'collabpress'); ?></option>
                         </select>
                     </td>
                 </tr>
@@ -134,12 +134,12 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                     <th scope="row"><label for="shortcode_user_role"><?php _e( 'Minimum User Role to view [collabpress] shortcode front-end', 'collabpress' ); ?></label></th>
                     <td>
                         <select name="cp_options[shortcode_user_role]">
-                            <option value="all" <?php selected( $cp_shortcode_user_role, 'all' ); ?>>Anyone</option>
-                            <option value="manage_options" <?php selected( $cp_shortcode_user_role, 'manage_options' ); ?>>Administrator</option>
-                            <option value="delete_others_posts" <?php selected( $cp_shortcode_user_role, 'delete_others_posts' ); ?>>Editor</option>
-                            <option value="publish_posts" <?php selected( $cp_shortcode_user_role, 'publish_posts' ); ?>>Author</option>
-                            <option value="edit_posts" <?php selected( $cp_shortcode_user_role, 'edit_posts' ); ?>>Contributor</option>
-                            <option value="read" <?php selected( $cp_shortcode_user_role, 'read' ); ?>>Subscriber</option>
+                            <option value="all" <?php selected( $cp_shortcode_user_role, 'all' ); ?>><?php _e('Anyone', 'collabpress'); ?></option>
+                            <option value="manage_options" <?php selected( $cp_shortcode_user_role, 'manage_options' ); ?>><?php _e('Administrator', 'collabpress'); ?></option>
+                            <option value="delete_others_posts" <?php selected( $cp_shortcode_user_role, 'delete_others_posts' ); ?>><?php _e('Editor', 'collabpress'); ?></option>
+                            <option value="publish_posts" <?php selected( $cp_shortcode_user_role, 'publish_posts' ); ?>><?php _e('Author', 'collabpress'); ?></option>
+                            <option value="edit_posts" <?php selected( $cp_shortcode_user_role, 'edit_posts' ); ?>><?php _e('Contributor', 'collabpress'); ?></option>
+                            <option value="read" <?php selected( $cp_shortcode_user_role, 'read' ); ?>><?php _e('Subscriber', 'collabpress'); ?></option>
                         </select>
                     </td>
                 </tr>
@@ -155,6 +155,9 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                         </select>
                     </td>
                 </tr>
+                
+                <?php do_action( 'cp_after_advanced_settings' ) ?>
+                
                 <tr>
                     <td colspan="2"><input type="submit" name="Save" value="<?php _e( 'Save Settings', 'collabpress' ) ?>" class="button-primary" /></td>
                 </tr>
@@ -172,7 +175,7 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                 ?>
                  <tr>
                     <th scope="row"><label for="debug"><?php _e( 'Clear Activity Log', 'collabpress' ); ?><br />( <?php echo $cp_activity_count .' entries total )'; ?></label></th>
-                    <td valign="top"><?php echo '<input type="submit" name="cp_clear_activity" value="Delete Log" class="button-secondary" onclick="javascript:check=confirm(\'' . __( 'WARNING: This will delete ALL activity logs.  Once logs have been deleted they can NOT be restored.\n\nChoose [Cancel] to Stop, [OK] to delete logs.\n' ) .'\' );if(check==false) return false;" />';?></td>
+                    <td valign="top"><?php echo '<input type="submit" name="cp_clear_activity" value="'.__('Delete Log', 'collabpress').'" class="button-secondary" onclick="javascript:check=confirm(\'' . __( 'WARNING: This will delete ALL activity logs.  Once logs have been deleted they can NOT be restored.\n\nChoose [Cancel] to Stop, [OK] to delete logs.\n', 'collabpress' ) .'\' );if(check==false) return false;" />';?></td>
                 </tr>
                 <tr>
                     <td colspan="2"><hr /></td>

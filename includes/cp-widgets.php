@@ -14,14 +14,14 @@ class cp_widget_overview extends WP_Widget {
     function cp_widget_overview() {
         $widget_ops = array(
 			'classname' => 'cp_widget_overview_class',
-			'description' => 'Display CollabPress overview stats'
+			'description' => __('Display CollabPress overview stats', 'collabpress')
 			);
-        $this->WP_Widget( 'cp_widget_overview', 'CollabPress: Overview Widget', $widget_ops );
+        $this->WP_Widget( 'cp_widget_overview', __('CollabPress: Overview Widget', 'collabpress'), $widget_ops );
     }
 
      //build the widget settings form
     function form( $instance ) {
-        $defaults = array( 'title' => 'CollabPress Overview', 'cp_projects' => 'on', 'cp_task_lists' => 'on', 'cp_tasks' => 'on', 'cp_users' => 'on' );
+        $defaults = array( 'title' => __('CollabPress Overview', 'collabpress'), 'cp_projects' => 'on', 'cp_task_lists' => 'on', 'cp_tasks' => 'on', 'cp_users' => 'on' );
         $instance = wp_parse_args( (array) $instance, $defaults );
         
         $title = $instance['title'];
@@ -70,27 +70,27 @@ class cp_widget_overview extends WP_Widget {
         if ( $cp_projects == 'on' ) :
             $projectCount = wp_count_posts('cp-projects');
             $projectCount = $projectCount->publish;
-            echo '<p class="overview-count">' .$projectCount.'</span> Project' .( ( $projectCount == 1 ) ? '' : 's' ) .'</p>';
+            echo '<p class="overview-count">' .$projectCount.'</span> '.__('Project', 'collabpress') .( ( $projectCount == 1 ) ? '' : 's' ) .'</p>';
         endif;
         
         // Task Lists Count
         if ( $cp_task_lists == 'on' ) :
             $taskListCount = wp_count_posts('cp-task-lists');
             $taskListCount = $taskListCount->publish;
-            echo '<p class="overview-count">' .$taskListCount.'</span> Task List' .( ( $taskListCount == 1 ) ? '' : 's' ) .'</p>';
+            echo '<p class="overview-count">' .$taskListCount.'</span> '.__('Task List', 'collabpress') .( ( $taskListCount == 1 ) ? '' : 's' ) .'</p>';
         endif;
 
         // Tasks Count
         if ( $cp_tasks == 'on' ) :
             $taskCount = wp_count_posts('cp-tasks');
             $taskCount = $taskCount->publish;
-            echo '<p class="overview-count">' .$taskCount.'</span> Task' .( ( $taskCount == 1 ) ? '' : 's' ) .'</p>';
+            echo '<p class="overview-count">' .$taskCount.'</span> '.__('Task', 'collabpress') .( ( $taskCount == 1 ) ? '' : 's' ) .'</p>';
         endif;
 
         // User Count
         if ( $cp_users == 'on' ) :
             $result = count_users();
-            echo '<p class="overview-count">' .$result['total_users'] .'</span> User' .( ( $result['total_users'] == 1 ) ? '' : 's' ) .'</p>';
+            echo '<p class="overview-count">' .$result['total_users'] .'</span> '.__('User', 'collabpress') .( ( $result['total_users'] == 1 ) ? '' : 's' ) .'</p>';
         endif;
 
         echo '</div>';

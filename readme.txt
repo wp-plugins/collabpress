@@ -1,10 +1,10 @@
 === CollabPress ===
-Contributors: WDS-Scott, williamsba1, cochran
+Contributors: WDS-Scott, williamsba1, cochran, boonebgorges
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
-Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget
+Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget, multisite, buddypress
 Requires at least: 3.0
-Tested up to: 3.1.2
-Stable tag: 1.1.3
+Tested up to: 3.2.1
+Stable tag: 1.2
 
 Project management and task tracking software for WordPress
 
@@ -17,13 +17,14 @@ Features include:
 * Unlimited projects, task lists, tasks, and comments
 * Easily edit/delete projects, task lists, tasks, and comments
 * Front-end shortcode support
+* BuddyPress group integration
 * File upload on projects, task lists, task, and comments
 * Email notifications for new tasks and comments
 * Task due dates with a calendar view
 * Uses built-in WordPress user accounts
 * Activity log tracking all activity
 
-Works with WordPress and Multisite
+Works with WordPress, Multisite, and BuddyPress!
 
 == Screenshots ==
 
@@ -32,8 +33,16 @@ Works with WordPress and Multisite
 3. Single task view with comments
 4. Calendar view with tasks and due dates
 5. Shortcode support example
+6. BuddyPress Group integration
 
 == Changelog ==
+
+= 1.2 =
+* BuddyPress Group integration ( requires BP v1.5+ )
+* Assign specific users to each project
+* Task item priority setting
+* Updated missing __() and _e() for translation
+* Fixed missing styles for "Recent Activity" on WP Dashboard
 
 = 1.1.3 =
 * Fixed JS conflict with WordPress navigation menus
@@ -101,6 +110,13 @@ Works with WordPress and Multisite
 
 == Upgrade Notice ==
 
+= 1.2 =
+* BuddyPress Group integration ( requires BP v1.5+ )
+* Assign specific users to each project
+* Task item priority setting
+* Updated missing __() and _e() for translation
+* Fixed missing styles for "Recent Activity" on WP Dashboard
+
 = 1.1.3 =
 * Fixed JS conflict with WordPress navigation menus
 * Fixed WP nonce bug when adding a project/task list or task
@@ -147,10 +163,6 @@ Works with WordPress and Multisite
 That's it! Now you can easily start adding new projects and tasks
 
 == Frequently Asked Questions ==
-
-= Where did all of my data go? =
-
-CollabPress v1.0 does NOT support legacy CollabPress data at this time. If you are running a previous version, your data will not be lost, but it will not be displayed or used in the new version.  To retrieve your data install an older version of CollabPress.
 
 = Why are some features not implemented? =
 

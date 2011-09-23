@@ -1,6 +1,6 @@
 <?php
 
-global $cp_project;
+global $cp_project, $cp_bp_integration;
 
 // Add Task List
 if ( isset( $_POST['cp-add-task-list'] ) && isset($_POST['cp-task-list']) ) :
@@ -8,19 +8,21 @@ if ( isset( $_POST['cp-add-task-list'] ) && isset($_POST['cp-task-list']) ) :
 	check_admin_referer('cp-add-task-list');
 
 	$add_task_list = array(
-						'post_title' => esc_html($_POST['cp-task-list']),
-						'post_status' => 'publish',
-						'post_type' => 'cp-task-lists'
-						);
+				'post_title' => esc_html($_POST['cp-task-list']),
+				'post_status' => 'publish',
+				'post_type' => 'cp-task-lists'
+				);
 	$task_list_id = wp_insert_post( $add_task_list );
 
-	if ( isset($_GET['project']) )
+	if ( isset( $_GET['project'] ) || ( isset( $cp_bp_integration->current_view ) && 'project' == $cp_bp_integration->current_view ) )
 		update_post_meta( $task_list_id, '_cp-project-id', $cp_project->id );
 	if ( isset($_POST['cp-task-list-description']) )
 		update_post_meta( $task_list_id, '_cp-task-list-description', esc_html($_POST['cp-task-list-description']) );
 	
 	// Add Activity
 	cp_add_activity(__('added', 'collabpress'), __('task list', 'collabpress'), $current_user->ID, $task_list_id);
+	
+	do_action( 'cp_task_list_added', $task_list_id );
 
 endif;
 
@@ -44,6 +46,7 @@ if ( isset( $_POST['cp-edit-task-list'] ) && $_POST['cp-edit-task-list-id'] ) :
 	// Add Activity
 	cp_add_activity(__('updated', 'collabpress'), __('task list', 'collabpress'), $current_user->ID, $tasklistID);
 
+	do_action( 'cp_task_list_edited', $tasklistID );
     }
 
 endif;
@@ -73,12 +76,12 @@ if ( isset( $_GET['cp-delete-task-list-id'] ) ) :
 	// WP_Query();
 	if ( $tasks_query->have_posts() ) :
 	    while( $tasks_query->have_posts() ) : $tasks_query->the_post();
-
 		//delete the task
 		wp_delete_post( get_the_ID(), true );
-
 	    endwhile;
 	endif;
+	
+	do_action( 'cp_task_list_deleted', $cp_task_list_id ); 
 
     }
 

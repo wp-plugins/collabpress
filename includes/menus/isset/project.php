@@ -13,9 +13,14 @@ if ( isset( $_POST['cp-add-project'] ) && isset($_POST['cp-project']) ) :
 	$project_id = wp_insert_post( $add_project );
 	
 	update_post_meta( $project_id, '_cp-project-description', esc_html($_POST['cp-project-description']) );
+
+	$cp_project_users = ( !empty($_POST['cp_project_users']) ) ? array_map( 'absint', $_POST['cp_project_users'] ) : array( 1 );
+	update_post_meta( $project_id, '_cp-project-users', $cp_project_users );
 	
 	// Add Activity
 	cp_add_activity(__('added', 'collabpress'), __('project', 'collabpress'), $current_user->ID, $project_id);
+	
+	do_action( 'cp_project_added', $project_id );
 
 endif;
 
@@ -34,11 +39,16 @@ if ( isset( $_POST['cp-edit-project'] ) && $_POST['cp-edit-project-id'] ) :
 	    $project['ID'] = $projectID;
 	    $project['post_title'] = esc_html( $_POST['cp-project'] );
 	    wp_update_post( $project );
+
 	    update_post_meta( $projectID, '_cp-project-description', esc_html( $_POST['cp-project-description'] ) );
+
+	    $cp_project_users = ( !empty($_POST['cp_project_users']) ) ? array_map( 'absint', $_POST['cp_project_users'] ) : array( 1 );
+	    update_post_meta( $projectID, '_cp-project-users', $cp_project_users );
 
 	    // Add Activity
 	    cp_add_activity(__('updated', 'collabpress'), __('project', 'collabpress'), $current_user->ID, $projectID);
 
+	    do_action( 'cp_project_edited', $projectID );
 	}
 
 endif;
@@ -68,6 +78,7 @@ if ( isset( $_GET['cp-delete-project-id'] ) ) :
 	// WP_Query();
 	if ( $tasks_query->have_posts() ) :
 	    while( $tasks_query->have_posts() ) : $tasks_query->the_post();
+		$project_id = get_the_ID();
 
 		//delete the task
 		wp_delete_post( get_the_ID(), true );
@@ -96,6 +107,8 @@ if ( isset( $_GET['cp-delete-project-id'] ) ) :
 
 	//add activity log
 	cp_add_activity(__('deleted', 'collabpress'), __('project', 'collabpress'), $current_user->ID, $cp_project_id );
+	
+	do_action( 'cp_project_deleted', $project_id );
 
     }
 

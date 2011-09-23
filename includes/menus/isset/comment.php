@@ -37,10 +37,10 @@ if ( isset( $_POST['cp-add-comment'] ) && isset($_POST['cp-comment-content']) ) 
 	    $task_author_data = get_userdata( $task_author_id );
 	    $author_email = $task_author_data->user_email;
 
-	    $subject = 'New comment on task ' .get_the_title( $cp_task->id );
+	    $subject = __('New comment on task ', 'collabpress') .get_the_title( $cp_task->id );
 	    
-	    $message = "There is a new comment on your task from " .$current_user->display_name. ": " .get_the_title( $cp_task->id ) ."\n\n";
-	    $message .= "Comment:\n";
+	    $message = __("There is a new comment on your task from ", "collabpress") .$current_user->display_name. ": " .get_the_title( $cp_task->id ) ."\n\n";
+	    $message .= __("Comment:", "collabpress") . "\n";
 	    $message .= esc_html( $_POST['cp-comment-content'] );
 
 	    cp_send_email( $author_email, $subject, $message );

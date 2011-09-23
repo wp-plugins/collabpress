@@ -37,7 +37,7 @@ function cp_using_shortcode($posts) {
         }
 
     if ($foundsc = true) {
-    $css_src = plugins_url('/css/front.css', __FILE__);
+    $css_src = CP_PLUGIN_URL . 'includes/css/front.css';
 
     wp_register_style('cp_frontend_css', $css_src );
     wp_enqueue_style('cp_frontend_css');
@@ -181,20 +181,25 @@ function cp_sc_projects( $id ) {
 
         while( $projects_query->have_posts() ) : $projects_query->the_post();
 
-        //generate delete project link
-        $cp_del_link = CP_DASHBOARD .'&cp-delete-project-id='.get_the_ID();
-        $cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_project' ) : $cp_del_link;
+		//verify user has permission to view this project
+		if ( cp_check_project_permissions( $current_user->ID, get_the_ID() ) ) {
 
-        //generate edit project link
-        $cp_edit_link = CP_DASHBOARD.'&project='.get_the_ID().'&view=edit';
+			//generate delete project link
+			$cp_del_link = CP_DASHBOARD .'&cp-delete-project-id='.get_the_ID();
+			$cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_project' ) : $cp_del_link;
 
-        echo '<div class="cp-project-item"><a class="cp_project_name" href="'.CP_DASHBOARD.'&project='.get_the_ID().'">'.get_the_title().'</a>';
+			//generate edit project link
+			$cp_edit_link = CP_DASHBOARD.'&project='.get_the_ID().'&view=edit';
 
-        //check if user can view edit/delete links
-        if ( cp_check_permissions( 'settings_user_role' ) ) {
-            echo '<span class="edit-del-links"><a class="cp_project_edit" href="' .$cp_edit_link. '">' .__( 'edit', 'collabpress'). '</a> &middot; <a class="cp_project_del" href="' .$cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected project, including ALL task lists and tasks in the project.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">delete</a></span>';
-        }
-        echo '</div>';
+			echo '<div class="cp-project-item"><a class="cp_project_name" href="'.CP_DASHBOARD.'&project='.get_the_ID().'">'.get_the_title().'</a>';
+
+			//check if user can view edit/delete links
+			if ( cp_check_permissions( 'settings_user_role' ) ) {
+				echo '<span class="edit-del-links"><a class="cp_project_edit" href="' .$cp_edit_link. '">' .__( 'edit', 'collabpress'). '</a> &middot; <a class="cp_project_del" href="' .$cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected project, including ALL task lists and tasks in the project.\n\nChoose [Cancel] to Stop, [OK] to delete.\n', 'collabpress' ) .'\');if(check==false) return false;">' .__('delete', 'collabpress'). '</a></span>';
+			}
+			echo '</div>';
+
+		}
     ?>
 
     <?php
@@ -248,7 +253,7 @@ function cp_sc_task_list() {
 
         //check if user can view edit/delete links
         if ( cp_check_permissions( 'settings_user_role' ) ) {
-        echo '<span class="edit-del-links"><a class="cp_tl_edit" href="' .$cp_edit_link. '">edit</a> &middot; <a class="cp_tl_del" href="' .$cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected task list and all tasks in the list.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">delete</a></span></li>';
+        echo '<span class="edit-del-links"><a class="cp_tl_edit" href="' .$cp_edit_link. '">edit</a> &middot; <a class="cp_tl_del" href="' .$cp_del_link. '" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected task list and all tasks in the list.\n\nChoose [Cancel] to Stop, [OK] to delete.\n', 'collabpress' ) .'\');if(check==false) return false;">' .__('delete', 'collabpress'). '</a></span></li>';
         }
 
     endwhile;
@@ -316,6 +321,9 @@ function cp_sc_task() {
             //check task status
             $task_status = get_post_meta( get_the_ID(), '_cp-task-status', true );
 
+            //check task priority
+            $task_priority = get_post_meta( get_the_ID(), '_cp-task-priority', true );
+
             echo '<div class="cp_task_summary '. $oddeven_class . '">';
             	
 				echo '<input type="checkbox" name="" value="0" onclick="window.location=\''. $link. '\'; return true;"  /> ';
@@ -323,11 +331,11 @@ function cp_sc_task() {
 				
 				echo '<div class="cp_task_meta">';
 					
-					echo '<span class="cp_assign_due">'.__( 'Assigned to:', 'collabpress' ) .'' .get_avatar( $task_user_id, 16 ). '' . $user_name . ' Due: ' . $task_due_date .'</span>';
+					echo '<span class="cp_assign_due">'.__( 'Assigned to:', 'collabpress' ) .'' .get_avatar( $task_user_id, 16 ). '' . $user_name . ' - ' .__('Due: ', 'collabpress') . $task_due_date .' - ' .__('Priority: ', 'collabpress') .$task_priority.'</span>';
 					if ( $num_comments > 0 ) echo '<span class="cp_task_comm">'.$num_comments. '</span>';
 					//check if user can view edit/delete links
 					if ( cp_check_permissions( 'settings_user_role' ) ) {
-						echo '<span class="edit-del-links"><a class="cp_task_edit" href="'.$cp_edit_link.'">' .__('edit', 'collabpress'). '</a> &middot; <a class="cp_task_del" href="'. $cp_del_link .'" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected task.\n\nChoose [Cancel] to Stop, [OK] to delete.\n' ) .'\');if(check==false) return false;">'.__( 'delete', 'collabpress' ). '</a></span>';
+						echo '<span class="edit-del-links"><a class="cp_task_edit" href="'.$cp_edit_link.'">' .__('edit', 'collabpress'). '</a> &middot; <a class="cp_task_del" href="'. $cp_del_link .'" style="color:red;" onclick="javascript:check=confirm(\'' . __('WARNING: This will delete the selected task.\n\nChoose [Cancel] to Stop, [OK] to delete.\n', 'collabpress' ) .'\');if(check==false) return false;">' .__( 'delete', 'collabpress' ). '</a></span>';
 					}
      			echo '</div>';
      			
@@ -383,6 +391,9 @@ function cp_sc_task() {
             //check task status
             $task_status = get_post_meta( get_the_ID(), '_cp-task-status', true );
 
+            //check task priority
+            $task_priority = get_post_meta( get_the_ID(), '_cp-task-priority', true );
+
             echo '<div class="cp_task_summary ' . $oddeven_class . '">';
             
 				echo '<input type="checkbox" name="" value="0" onclick="window.location=\''. $link. '\'; return true;"  /> ';
@@ -398,7 +409,7 @@ function cp_sc_task() {
 				}
 				
 				echo '<div class="cp_task_meta">';
-					echo '<span class="cp_assign_due">'.__( 'Assigned to:', 'collabpress' ) .'' .get_avatar( $task_user_id, 16 ). '' . $user_name . ' Due: ' . $task_due_date .'</span>';
+					echo '<span class="cp_assign_due">'.__( 'Assigned to:', 'collabpress' ) .'' .get_avatar( $task_user_id, 16 ). '' . $user_name . ' - ' .__('Due: ', 'collabpress') . $task_due_date .' - ' .__('Priority: ', 'collabpress') .$task_priority.'</span>';
 					echo '<span class="cp_task_comm">'.$num_comments. '</span>';
 				echo '</div>';
 				
