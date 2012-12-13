@@ -244,6 +244,11 @@ class CP_BP_Integration {
 	 */
 	function render_settings() {
 
+		// Only show to super admins
+		if ( !is_super_admin() ) {
+			return;
+		}
+
 		$options = cp_get_options();
 
 		?>

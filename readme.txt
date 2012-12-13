@@ -1,10 +1,10 @@
 === CollabPress ===
-Contributors: WDS-Scott, williamsba1, cochran, boonebgorges
+Contributors: scottbasgaard, williamsba1, cochran, boonebgorges, ericlewis
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3084056
 Tags: task, management, basecamp, to do, projects, lists, team, planning, tracking, reporting, shortcode, widget, multisite, buddypress
 Requires at least: 3.0
-Tested up to: 3.2.1
-Stable tag: 1.2.1
+Tested up to: 3.5
+Stable tag: 1.2.2
 
 Project management and task tracking software for WordPress
 
@@ -26,6 +26,10 @@ Features include:
 
 Works with WordPress, Multisite, and BuddyPress!
 
+= Get Involved =
+
+CollabPress is an Open Source project. If you are a developer, make sure to check out and contribute to CollabPress on the [CollabPress GitHub Repository](https://github.com/WebDevStudios/CollabPress/ "CollabPress GitHub Repository").
+
 == Screenshots ==
 
 1. CollabPress Dashboard showing recent activity, users, overview, and more
@@ -36,6 +40,13 @@ Works with WordPress, Multisite, and BuddyPress!
 6. BuddyPress Group integration
 
 == Changelog ==
+
+= 1.2.2 =
+* Calls to $wpdb have been replaced with calls to the WP APIs
+* Fixed issue with screen options and missing columns
+* Hardened security
+* Use bundled jQuery UI and Datepicker instead of Google's
+* WordPress 3.5 support
 
 = 1.2.1 =
 * Fixed bug when adding tasks without BuddyPress installed
@@ -113,6 +124,13 @@ Works with WordPress, Multisite, and BuddyPress!
 
 == Upgrade Notice ==
 
+= 1.2.2 =
+* Calls to $wpdb have been replaced with calls to the WP APIs
+* Fixed issue with screen options and missing columns
+* Hardened security
+* Use bundled jQuery UI and Datepicker instead of Google's
+* WordPress 3.5 support
+
 = 1.2.1 =
 * Fixed bug when adding tasks without BuddyPress installed
 
@@ -172,13 +190,11 @@ That's it! Now you can easily start adding new projects and tasks
 
 = Why are some features not implemented? =
 
-CollabPress is currently in early development. If you have any bugs to report, ideas or anything else please visit the support forum. [CollabPress Support](http://collabpress.org/support/forum/ "Task Management Plugin Support")
-
-You can also view the [CollabPress Roadmap](http://collabpress.org/roadmap/ "WordPress Project Management Plugin Roadmap") to see what features to expect in upcoming versions
+CollabPress is currently in early development. If you have any bugs to report, ideas or anything else please visit the support forum. [CollabPress Support](http://wordpress.org/support/plugin/collabpress "Task Management Plugin Support")
 
 = Does this plugin work with WordPress Multisite? =
 
 Absolutely!  This plugin has been tested and verified to work on the most current version of WordPress Multisite
 
 == Plugin Support ==
-[CollabPress Support](http://collabpress.org/support/forum/ "CollabPress Plugin Support")
+[CollabPress Support](http://wordpress.org/support/plugin/collabpress "CollabPress Plugin Support")

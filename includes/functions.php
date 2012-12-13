@@ -143,7 +143,7 @@ function cp_get_breadcrumb() {
 			//load the task list ID for this task
 			$cp_task_list_id = get_post_meta( $cp_task->id, '_cp-task-list-id', true );
 
-			echo '<li class="dash-crumb"><a href="' .CP_DASHBOARD. '">'.__('Dashboard', 'collabpress').'</a></li><li class="proj-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a></li><li class="list-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'&task-list='.$cp_task_list_id.'">' .get_the_title( $cp_task_list_id ). '</a></li><li class="task-crumb"><span>' .get_the_title( $cp_task->id ).'</span></li>';
+			echo '<li class="dash-crumb"><a href="' .CP_DASHBOARD. '">'.__('Dashboard', 'collabpress').'</a></li><li class="proj-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'">' .get_the_title($cp_project_id). '</a></li><li class="list-crumb"><a href="'.CP_DASHBOARD.'&project='.$cp_project_id.'&task-list='.$cp_task_list_id.'">' .get_the_title( $cp_task_list_id ). '</a></li><li class="task-crumb"><span>' .cp_limit_length( get_the_title( $cp_task->id ), 50 ).'</span></li>';
 
 		else :
 
@@ -305,12 +305,11 @@ function cp_projects() {
 
 // List CollabPress Users
 function cp_users( $limit='yes' ) {
-	global $wpdb;
 
 	//using a custom query for now
 	//will update with WP_User_Query when WP 3.1 is released
 	//http://wpdevel.wordpress.com/2010/10/07/wp_user_search-has-been-replaced-by-wp_u/
-	$users = $wpdb->get_results( $wpdb->prepare( "SELECT ID from $wpdb->users ORDER BY ID" ) );
+	$users = get_users();
 	$cp_users_count = count( $users );
 
 	//load num users setting
@@ -527,9 +526,13 @@ function cp_add_task($data = NULL) {
     // WP_Query();
     while( $task_list_query->have_posts() ) : $task_list_query->the_post();
 
+	//CHECK IF USER CAN ADD TASKS CAPABILITY
+	if ( current_user_can( 'cp_add_task' ) ) {
+
 		echo '<form action="'.cp_clean_querystring().'" method="post">';
 			wp_nonce_field('cp-add-task');
 			?>
+			<h2>Add Task</h2>
 			<table class="form-table">
 				<tbody>
 					<tr valign="top">
@@ -594,6 +597,8 @@ function cp_add_task($data = NULL) {
 
 		echo '</form>';
 
+	}
+
     endwhile;
 	wp_reset_query();
 }
@@ -603,73 +608,78 @@ function cp_edit_task() {
 
 	global $cp_task, $cp_project;
 
-	echo '<form action="" method="post">';
-		wp_nonce_field('cp-edit-task');
-		?>
-		<input type="hidden" name="cp-edit-task-id" value="<?php echo $cp_task->id ?>" />
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
-					<td><fieldset><legend class="screen-reader-text"><span></span></legend>
-						<p><label for="cp-task"></label></p>
-						<p>
-							<textarea class="large-text code" id="cp-task" cols="30" rows="10" name="cp-task"><?php echo get_the_title($cp_task->id) ?></textarea>
-						</p>
-					</fieldset></td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><label for="cp-task-due"><?php _e('Due: ', 'collabpress') ?></label></th>
-					<td><p><input name="cp-task-due" id="datepicker" class="regular-text" type="text" value="<?php echo get_post_meta($cp_task->id, '_cp-task-due', true) ?>"/></p></td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><label for="cp-task-assign"><?php _e('Assigned to: ', 'collabpress') ?></label></th>
-					<td>
-						<p>
-						    <?php
-						    $selected = get_post_meta( $cp_task->id, '_cp-task-assign', true );
+	//CHECK IF USER CAN EDIT TASKS CAPABILITY
+	if ( current_user_can( 'cp_edit_task' ) ) {
 
-							$wp_user_search = new WP_User_Query( array( 'fields' => 'all' ) );
-							$wp_users = $wp_user_search->get_results();
-
-							$users = '<select name="cp-task-assign" id="cp-task-assign">';
-							foreach ( $wp_users as $wp_user ) {
-								//verify user has access to this project
-								if ( cp_check_project_permissions ( $wp_user->ID, $cp_project->id ) ) {
-									$users .= '<option value="' . $wp_user->ID . '" ' . selected( $wp_user->ID, $selected, false ) . '>' . $wp_user->user_login . '</option>';
-								}
-							}
-							$users .= '</select>';
-
-							$users = apply_filters( 'cp_task_user_list_html', $users, $selected );
-
-							echo $users;
-						    ?>
-						</p>
-					</td>
-				</tr>
+		echo '<form action="" method="post">';
+			wp_nonce_field('cp-edit-task');
+			?>
+			<input type="hidden" name="cp-edit-task-id" value="<?php echo $cp_task->id ?>" />
+			<table class="form-table">
+				<tbody>
 					<tr valign="top">
-						<th scope="row"><label for="cp-task-priority"><?php _e('Priority: ', 'collabpress') ?></label></th>
+						<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
+						<td><fieldset><legend class="screen-reader-text"><span></span></legend>
+							<p><label for="cp-task"></label></p>
+							<p>
+								<textarea class="large-text code" id="cp-task" cols="30" rows="10" name="cp-task"><?php echo get_the_title($cp_task->id) ?></textarea>
+							</p>
+						</fieldset></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><label for="cp-task-due"><?php _e('Due: ', 'collabpress') ?></label></th>
+						<td><p><input name="cp-task-due" id="datepicker" class="regular-text" type="text" value="<?php echo get_post_meta($cp_task->id, '_cp-task-due', true) ?>"/></p></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><label for="cp-task-assign"><?php _e('Assigned to: ', 'collabpress') ?></label></th>
 						<td>
-							<?php
-							$task_priority = get_post_meta( $cp_task->id, '_cp-task-priority', true );
-							?>
-							<select name="cp-task-priority" id="cp-task-priority">
-								<option value="Urgent" <?php selected( $task_priority, 'Urgent' ); ?>>Urgent</option>
-								<option value="High" <?php selected( $task_priority, 'High' ); ?>>High</option>
-								<option value="Normal" <?php selected( $task_priority, 'Normal' ); ?>>Normal</option>
-								<option value="Low" <?php selected( $task_priority, 'Low' ); ?>>Low</option>
-								<option value="Very Low" <?php selected( $task_priority, 'Very Low' ); ?>>Very Low</option>
-								<option value="None" <?php selected( $task_priority, 'None' ); ?>>None</option>
-							</select>
+							<p>
+								<?php
+								$selected = get_post_meta( $cp_task->id, '_cp-task-assign', true );
+
+								$wp_user_search = new WP_User_Query( array( 'fields' => 'all' ) );
+								$wp_users = $wp_user_search->get_results();
+
+								$users = '<select name="cp-task-assign" id="cp-task-assign">';
+								foreach ( $wp_users as $wp_user ) {
+									//verify user has access to this project
+									if ( cp_check_project_permissions ( $wp_user->ID, $cp_project->id ) ) {
+										$users .= '<option value="' . $wp_user->ID . '" ' . selected( $wp_user->ID, $selected, false ) . '>' . $wp_user->user_login . '</option>';
+									}
+								}
+								$users .= '</select>';
+
+								$users = apply_filters( 'cp_task_user_list_html', $users, $selected );
+
+								echo $users;
+								?>
+							</p>
 						</td>
 					</tr>
-			</tbody>
-		</table>
-		<?php
-		echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-task" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+						<tr valign="top">
+							<th scope="row"><label for="cp-task-priority"><?php _e('Priority: ', 'collabpress') ?></label></th>
+							<td>
+								<?php
+								$task_priority = get_post_meta( $cp_task->id, '_cp-task-priority', true );
+								?>
+								<select name="cp-task-priority" id="cp-task-priority">
+									<option value="Urgent" <?php selected( $task_priority, 'Urgent' ); ?>>Urgent</option>
+									<option value="High" <?php selected( $task_priority, 'High' ); ?>>High</option>
+									<option value="Normal" <?php selected( $task_priority, 'Normal' ); ?>>Normal</option>
+									<option value="Low" <?php selected( $task_priority, 'Low' ); ?>>Low</option>
+									<option value="Very Low" <?php selected( $task_priority, 'Very Low' ); ?>>Very Low</option>
+									<option value="None" <?php selected( $task_priority, 'None' ); ?>>None</option>
+								</select>
+							</td>
+						</tr>
+				</tbody>
+			</table>
+			<?php
+			echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-task" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
 
-	echo '</form>';
+		echo '</form>';
+
+	}
 
 }
 
@@ -689,7 +699,7 @@ function cp_task() {
 	    foreach ($tasks_query as $post):
 		setup_postdata($post);
 
-			$user = get_post_meta(get_the_ID(), '_cp-task-assign', true);
+			$user = get_post_meta( get_the_ID(), '_cp-task-assign', true);
 			$user = get_userdata($user);
 
 			//get task due date
@@ -713,7 +723,7 @@ function cp_task() {
 			$cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_task' ) : $cp_del_link;
 
 			//generate edit task link
-			$cp_edit_link = apply_filters( 'cp_task_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task=' . get_the_ID(), get_the_ID(), $cp_project->id ) . '&view=edit';
+			$cp_edit_link = add_query_arg( 'view', 'edit', apply_filters( 'cp_task_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task=' . get_the_ID(), get_the_ID(), $cp_project->id ) );
 
 			//check task status
 			$task_status = get_post_meta( get_the_ID(), '_cp-task-status', true );
@@ -721,7 +731,7 @@ function cp_task() {
 			echo '<div class="cp_task_summary">';
 			echo '<div id="cp-gravatar">' .get_avatar( $task_user_id, 32 ). '</div><p><input type="checkbox" name="" value="0" onclick="window.location=\''. $link. '\'; return true;"  /> ';
 
-			echo '<a href="' . apply_filters( 'cp_task_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task=' . get_the_ID(), get_the_ID(), $cp_project->id ) .'">'.get_the_title().'</a> - '.__('Due: ', 'collabpress') .$task_due_date;
+			echo '<a href="' . apply_filters( 'cp_task_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task=' . get_the_ID(), get_the_ID(), $cp_project->id ) .'">' .cp_limit_length( get_the_title(), 125 ).'</a> - '.__('Due: ', 'collabpress') .$task_due_date;
 
 			//check if user can view edit/delete links
 			if ( cp_check_permissions( 'settings_user_role' ) ) {
@@ -805,17 +815,22 @@ function cp_add_task_list() {
 	global $cp_project;
 
 	// Get Project
-	$project_args = array ( 'post_type' => 'cp-projects',
-						'showposts' => 1
-					);
+	$project_args = array (
+		'post_type' => 'cp-projects',
+		'posts_per_page' => 1
+		);
 	$project_query = new WP_Query( $project_args );
 
 	// WP_Query();
     while( $project_query->have_posts() ) : $project_query->the_post();
 
+	//CHECK IF USER CAN ADD TASK LISTS CAPABILITY
+	if ( current_user_can( 'cp_add_task_lists' ) ) {
+
 		echo '<form action="'.cp_clean_querystring().'" method="post">';
 			wp_nonce_field('cp-add-task-list');
 			?>
+			<h2><?php _e( 'Add Task List', 'collabpress' ); ?></h2>
 			<table class="form-table">
 				<tbody>
 					<tr valign="top">
@@ -831,12 +846,15 @@ function cp_add_task_list() {
 							</p>
 						</fieldset></td>
 					</tr>
+					<?php do_action( 'cp_add_task_list_extra_fields' ); ?>
 				</tbody>
 			</table>
 			<?php
 			echo '<p class="submit"><input class="button-primary" type="submit" name="cp-add-task-list" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
 
 		echo '</form>';
+
+	}
 
     endwhile;
 	wp_reset_query();
@@ -847,31 +865,38 @@ function cp_edit_task_list() {
 
 	global $cp_task_list;
 
-	echo '<form action="" method="post">';
-		wp_nonce_field('cp-edit-task-list');
-		?>
-		<input type="hidden" name="cp-edit-task-list-id" value="<?php echo $cp_task_list->id ?>" />
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><label for="cp-task-list"><?php _e('Name: ', 'collabpress') ?></label></th>
-					<td><p><input type="text" class="regular-text" value="<?php echo get_the_title($cp_task_list->id) ?>" id="blogname" name="cp-task-list" /></p></td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
-					<td><fieldset><legend class="screen-reader-text"><span></span></legend>
-						<p><label for="cp-task-list-description"></label></p>
-						<p>
-							<textarea class="large-text code" id="cp-task-list-description" cols="30" rows="10" name="cp-task-list-description"><?php echo get_post_meta($cp_task_list->id, '_cp-task-list-description', true) ?></textarea>
-						</p>
-					</fieldset></td>
-				</tr>
-			</tbody>
-		</table>
-		<?php
-		echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-task-list" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+	//CHECK IF USER CAN EDIT TASK LISTS CAPABILITY
+	if ( current_user_can( 'cp_edit_task_lists' ) ) {
 
-	echo '</form>';
+		echo '<form action="" method="post">';
+			wp_nonce_field('cp-edit-task-list');
+			?>
+			<input type="hidden" name="cp-edit-task-list-id" value="<?php echo $cp_task_list->id ?>" />
+			<h2><?php _e( 'Edit Task List', 'collabpress' ); ?></h2>
+			<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row"><label for="cp-task-list"><?php _e('Name: ', 'collabpress') ?></label></th>
+						<td><p><input type="text" class="regular-text" value="<?php echo get_the_title($cp_task_list->id) ?>" id="blogname" name="cp-task-list" /></p></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
+						<td><fieldset><legend class="screen-reader-text"><span></span></legend>
+							<p><label for="cp-task-list-description"></label></p>
+							<p>
+								<textarea class="large-text code" id="cp-task-list-description" cols="30" rows="10" name="cp-task-list-description"><?php echo get_post_meta($cp_task_list->id, '_cp-task-list-description', true) ?></textarea>
+							</p>
+						</fieldset></td>
+					</tr>
+					<?php do_action( 'cp_edit_task_list_extra_fields', $cp_task_list->id ); ?>
+				</tbody>
+			</table>
+			<?php
+			echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-task-list" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+
+		echo '</form>';
+
+	}
 
 }
 
@@ -900,7 +925,7 @@ function cp_task_list() {
 	$cp_del_link = ( function_exists('wp_nonce_url') ) ? wp_nonce_url( $cp_del_link, 'cp-action-delete_task_list' ) : $cp_del_link;
 
 	//generate edit task list link
-	$cp_edit_link = apply_filters( 'cp_task_list_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task-list=' . get_the_ID(), get_the_ID(), $cp_project->id ) . '&view=edit';
+	$cp_edit_link = add_query_arg( 'view', 'edit', apply_filters( 'cp_task_list_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task-list=' . get_the_ID(), get_the_ID(), $cp_project->id ) );
 
 	echo '<p><a href="'. apply_filters( 'cp_task_list_link', CP_DASHBOARD . '&project=' . $cp_project->id . '&task-list=' . get_the_ID(), get_the_ID(), $cp_project->id ) . '">'.get_the_title().'</a>';
 
@@ -923,51 +948,64 @@ function cp_add_project() {
 	global $current_user;
 	get_currentuserinfo();
 
-	$wp_user_search = new WP_User_Query( array( 'fields' => 'all' ) );
-	$wp_users = $wp_user_search->get_results();
+	//CHECK IF USER CAN ADD PROJECTS CAPABILITY
+	if ( current_user_can( 'cp_add_projects' ) ) {
 
-	// Add Project Form
-	echo '<form action="'.cp_clean_querystring().'" method="post" name="new_project_form">';
-		wp_nonce_field('cp-add-project');
-		?>
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><label for="cp-project"><?php _e( 'Name: ', 'collabpress' ) ?></label></th>
-					<td><p><input type="text" class="regular-text" value="" id="blogname" name="cp-project" /></p></td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><?php _e( 'Description: ', 'collabpress' ) ?></th>
-					<td><fieldset><legend class="screen-reader-text"><span></span></legend>
-					    <p><label for="cp-project-description"></label></p>
-					    <p>
-						<textarea class="large-text code" id="cp-project-description" cols="30" rows="10" name="cp-project-description"></textarea>
-					    </p>
-					</fieldset></td>
-				</tr>
+		// Add Project Form
+		echo '<form action="'.cp_clean_querystring().'" method="post" name="new_project_form">';
+			wp_nonce_field('cp-add-project');
+			?>
+			<h2><?php _e( 'Add Project', 'collabpress' ); ?></h2>
+			<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row"><label for="cp-project"><?php _e( 'Name: ', 'collabpress' ) ?></label></th>
+						<td><p><input type="text" class="regular-text" value="" id="blogname" name="cp-project" /></p></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e( 'Description: ', 'collabpress' ) ?></th>
+						<td><fieldset><legend class="screen-reader-text"><span></span></legend>
+							<p><label for="cp-project-description"></label></p>
+							<p>
+							<textarea class="large-text code" id="cp-project-description" cols="30" rows="10" name="cp-project-description"></textarea>
+							</p>
+						</fieldset></td>
+					</tr>
 
-				<?php if ( !function_exists( 'bp_is_active' ) || !bp_is_active( 'groups' ) || !bp_is_group() ) : ?>
-				<tr valign="top">
-				    <th scope="row"><label for="cp-project-users"><?php _e( 'Users: ', 'collabpress' ) ?></label></th>
-				    <td>
-					<p>
-					    <input type="button" name="CheckAll" value="<?php _e( 'Check All', 'collabpress' ); ?>" onClick="checkAll(document.new_project_form['cp_project_users[]'])" />
-					    <input type="button" name="UnCheckAll" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" onClick="uncheckAll(document.new_project_form['cp_project_users[]'])" />
-					</p>
-					<?php
-					foreach ( $wp_users as $wp_user ) {
-					    echo '<input type="checkbox" name="cp_project_users[]" value="'.$wp_user->ID .'" checked="checked" />&nbsp;' .$wp_user->user_login .'<br />';
-					}
-					?>
-				    </td>
-				</tr>
-				<?php endif ?>
-			</tbody>
-		</table>
-		<?php
-		echo '<p class="submit"><input class="button-primary" type="submit" name="cp-add-project" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+					<?php if ( !function_exists( 'bp_is_active' ) || !bp_is_active( 'groups' ) || !bp_is_group() ) : ?>
+					<tr valign="top">
+						<th scope="row"><label for="cp-project-users"><?php _e( 'Users: ', 'collabpress' ) ?></label></th>
+						<td>
+						<p>
+							<input type="button" name="CheckAll" value="<?php _e( 'Check All', 'collabpress' ); ?>" onClick="checkAll(document.new_project_form['cp_project_users[]'])" />
+							<input type="button" name="UnCheckAll" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" onClick="uncheckAll(document.new_project_form['cp_project_users[]'])" />
+						</p>
+						<?php
+						//check if user is subscriber
+						if ( !current_user_can( 'manage_options' ) ) {
+							//if not admin, assign project to logged in user
+							echo '<input type="checkbox" name="cp_project_users[]" value="'.$current_user->ID .'" checked="checked" />&nbsp;' .$current_user->user_login .'<br />';
+						}else{
+							// @todo This fails on huge userbases
+							$wp_user_search = new WP_User_Query( array( 'fields' => 'all' ) );
+							$wp_users = $wp_user_search->get_results();
 
-	echo '</form>';
+							foreach ( $wp_users as $wp_user ) {
+								echo '<input type="checkbox" name="cp_project_users[]" value="'.$wp_user->ID .'" checked="checked" />&nbsp;' .$wp_user->user_login .'<br />';
+							}
+						}
+						?>
+						</td>
+					</tr>
+					<?php endif ?>
+				</tbody>
+			</table>
+			<?php
+			echo '<p class="submit"><input class="button-primary" type="submit" name="cp-add-project" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+
+		echo '</form>';
+
+	}
 }
 
 // Edit Project
@@ -982,58 +1020,69 @@ function cp_edit_project() {
 	$wp_user_search = new WP_User_Query( array( 'fields' => 'all' ) );
 	$wp_users = $wp_user_search->get_results();
 
-	// Add Project Form
-	echo '<form action="" method="post" name="edit_project_form">';
-		wp_nonce_field('cp-edit-project');
-		?>
-		<input type="hidden" name="cp-edit-project-id" value="<?php echo $cp_project->id ?>" />
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><label for="cp-project"><?php _e('Name: ', 'collabpress') ?></label></th>
-					<td><p><input type="text" class="regular-text" value="<?php echo get_the_title($cp_project->id) ?>" id="blogname" name="cp-project" /></p></td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
-					<td><fieldset><legend class="screen-reader-text"><span></span></legend>
-						<p><label for="cp-project-description"></label></p>
+	//CHECK IF USER CAN EDIT PROJECTS CAPABILITY
+	if ( current_user_can( 'cp_edit_projects' ) ) {
+
+		// Add Project Form
+		echo '<form action="" method="post" name="edit_project_form">';
+			wp_nonce_field('cp-edit-project');
+			?>
+			<input type="hidden" name="cp-edit-project-id" value="<?php echo $cp_project->id ?>" />
+			<h2><?php _e( 'Edit Project', 'collabpress' ); ?></h2>
+			<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row"><label for="cp-project"><?php _e('Name: ', 'collabpress') ?></label></th>
+						<td><p><input type="text" class="regular-text" value="<?php echo get_the_title($cp_project->id) ?>" id="blogname" name="cp-project" /></p></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Description: ', 'collabpress') ?></th>
+						<td><fieldset><legend class="screen-reader-text"><span></span></legend>
+							<p><label for="cp-project-description"></label></p>
+							<p>
+								<textarea class="large-text code" id="cp-project-description" cols="30" rows="10" name="cp-project-description"><?php echo get_post_meta($cp_project->id, '_cp-project-description', true) ?></textarea>
+							</p>
+						</fieldset></td>
+					</tr>
+
+					<?php /* Don't show this on BP group tabs */ ?>
+					<?php if ( empty( $bp->groups->current_group ) ) : ?>
+					<tr valign="top">
+						<th scope="row"><label for="cp-project-users"><?php _e( 'Users: ', 'collabpress' ) ?></label></th>
+						<td>
 						<p>
-							<textarea class="large-text code" id="cp-project-description" cols="30" rows="10" name="cp-project-description"><?php echo get_post_meta($cp_project->id, '_cp-project-description', true) ?></textarea>
+							<input type="button" name="CheckAll" value="<?php _e( 'Check All', 'collabpress' ); ?>" onClick="checkAll(document.edit_project_form['cp_project_users[]'])" />
+							<input type="button" name="UnCheckAll" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" onClick="uncheckAll(document.edit_project_form['cp_project_users[]'])" />
 						</p>
-					</fieldset></td>
-				</tr>
+						<?php
+						//get existing project users
+						$cp_project_users = get_post_meta( $cp_project->id, '_cp-project-users', true );
 
-				<?php /* Don't show this on BP group tabs */ ?>
-				<?php if ( empty( $bp->groups->current_group ) ) : ?>
-				<tr valign="top">
-				    <th scope="row"><label for="cp-project-users"><?php _e( 'Users: ', 'collabpress' ) ?></label></th>
-				    <td>
-					<p>
-					    <input type="button" name="CheckAll" value="<?php _e( 'Check All', 'collabpress' ); ?>" onClick="checkAll(document.edit_project_form['cp_project_users[]'])" />
-					    <input type="button" name="UnCheckAll" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" onClick="uncheckAll(document.edit_project_form['cp_project_users[]'])" />
-					</p>
-					<?php
-					//get existing project users
-					$cp_project_users = get_post_meta( $cp_project->id, '_cp-project-users', true );
+						foreach ( $wp_users as $wp_user ) {
+							if ( is_array( $cp_project_users ) ) {
+							$checked = ( in_array( $wp_user->ID, $cp_project_users ) ) ? 'checked="checked"' : '';
+							}else{
+							$checked='';
+							}
+							if ( !current_user_can( 'manage_options' ) ) {
+								//if not admin, assign project to logged in user
+								echo '<input type="checkbox" name="cp_project_users[]" value="'.$current_user->ID .'" checked="checked" />&nbsp;' .$current_user->user_login .'<br />';
+							}else{
+								echo '<input type="checkbox" name="cp_project_users[]" value="'.$wp_user->ID .'" '.$checked.'>&nbsp;' .$wp_user->user_login .'<br />';
+							}
+						}
+						?>
+						</td>
+					</tr>
+					<?php endif ?>
+				</tbody>
+			</table>
+			<?php
+			echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-project" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
 
-					foreach ( $wp_users as $wp_user ) {
-					    if ( is_array( $cp_project_users ) ) {
-						$checked = ( in_array( $wp_user->ID, $cp_project_users ) ) ? 'checked="checked"' : '';
-					    }else{
-						$checked='';
-					    }
-					    echo '<input type="checkbox" name="cp_project_users[]" value="'.$wp_user->ID .'" '.$checked.'>&nbsp;' .$wp_user->user_login .'<br />';
-					}
-					?>
-				    </td>
-				</tr>
-				<?php endif ?>
-			</tbody>
-		</table>
-		<?php
-		echo '<p class="submit"><input class="button-primary" type="submit" name="cp-edit-project" value="'.__( 'Submit', 'collabpress' ).'"/></p>';
+		echo '</form>';
 
-	echo '</form>';
+	}
 }
 
 // Task Comments
@@ -1105,8 +1154,6 @@ function cp_task_comments() {
 
 // User Page
 function cp_user_page() {
-
-	global $wpdb;
 	global $post;
 	global $cp_user;
 	$userdata = get_userdata($cp_user->id);
@@ -1121,13 +1168,19 @@ function cp_user_page() {
 			<h3><?php _e('Recent Activity', 'collabpress') ?></h3>
 			<?php
 			// Get Task Lists
-			$sql = " SELECT wposts.* FROM $wpdb->posts wposts
-			INNER JOIN $wpdb->postmeta key1 ON wposts.ID = key1.post_id AND key1.meta_key = '_cp-meta-type'
-			INNER JOIN $wpdb->postmeta key2 ON wposts.ID = key2.post_id AND key2.meta_key = '_cp-activity-author'
-			WHERE key1.meta_value = %d AND key2.meta_value = %s
-			AND wposts.post_status = 'publish' AND wposts.post_type = 'cp-meta-data'
-			ORDER BY wposts.post_date DESC ";
-		    $tasks_query = $wpdb->get_results( $wpdb->prepare( $sql, 'activity', $cp_user->id ) );
+		    $tasks_query = get_posts( array(
+		    	'post_type' => 'cp-meta-data',
+		    	'meta_query' => array(
+		    		array( 
+		    			'key' => '_cp-meta-type',
+		    			'value' => 'activity',
+		    		),
+		    		array( 
+		    			'key' => '_cp-activity-author',
+		    			'value' => $cp_user->id,
+		    		)	
+		    	)
+		    ) );
 
 			// WP_Query();
 		    if ($tasks_query) :
@@ -1153,13 +1206,19 @@ function cp_user_page() {
 			<h3><?php _e('Current Tasks', 'collabpress') ?></h3>
 			<?php
 			// Get Task Lists
-		    $sql = " SELECT wposts.* FROM $wpdb->posts wposts
-			INNER JOIN $wpdb->postmeta key1 ON wposts.ID = key1.post_id AND key1.meta_key = '_cp-task-assign'
-			INNER JOIN $wpdb->postmeta key2 ON wposts.ID = key2.post_id AND key2.meta_key = '_cp-task-status'
-			WHERE key1.meta_value = %d AND key2.meta_value = %s
-			AND wposts.post_status = 'publish' AND wposts.post_type = 'cp-tasks'
-			ORDER BY wposts.post_date DESC ";
-		    $tasks_query = $wpdb->get_results( $wpdb->prepare( $sql, $cp_user->id, 'open' ) );
+			$tasks_query = get_posts( array(
+				'post_type' => 'cp-tasks',
+				'meta_query' => array(
+					array( 
+						'key' => '_cp-task-assign',
+						'value' => $cp_user->id,
+					),
+					array( 
+						'key' => '_cp-task-status',
+						'value' => 'open',
+					)
+				)
+			) );
 
 			// WP_Query();
 		    if ($tasks_query) :
@@ -1404,17 +1463,23 @@ function cp_get_url( $ID = NULL, $type = NULL ) {
 
 // Retrieve all tasks in a task list with a specific status
 function cp_get_tasks( $task_list_id, $status ) {
-    global $wpdb;
-
+	$task_list_id = absint( $task_list_id );
+	$status = esc_attr( $status );
     if ( $task_list_id && $status ) {
-		$sql = " SELECT wposts.* FROM $wpdb->posts wposts
-		    INNER JOIN $wpdb->postmeta key1 ON wposts.ID = key1.post_id AND key1.meta_key = '_cp-task-list-id'
-		    INNER JOIN $wpdb->postmeta key2 ON wposts.ID = key2.post_id AND key2.meta_key = '_cp-task-status'
-		    WHERE key1.meta_value = %d AND key2.meta_value = %s
-		    AND wposts.post_status = 'publish' AND wposts.post_type = 'cp-tasks'
-		    ORDER BY wposts.post_date DESC ";
-		$tasks_query = $wpdb->get_results( $wpdb->prepare( $sql, absint( $task_list_id ), esc_html( $status ) ) );
-		return $tasks_query;
+		$tasks = get_posts( array( 
+			'post_type' => 'cp-tasks',
+			'meta_query' => array( 
+				array( 
+					'key' => '_cp-task-list-id',
+					'value' => $task_list_id,
+				),
+				array( 
+					'key' => '_cp-task-status',
+					'value' => $status,
+				)
+			)
+		) );
+		return $tasks;
     }
 }
 
@@ -1429,6 +1494,9 @@ function cp_check_permissions( $type = NULL ) {
     //load settings user role
     $options = get_option( 'cp_options' );
     $cp_settings_user_role = ( isset( $options[$type] ) ) ? esc_attr( $options[$type] ) : 'manage_options';
+
+    // Filter so that BP-compatibility (and other plugins) can modify
+    $cp_settings_user_role = apply_filters( 'cp_settings_user_role', $cp_settings_user_role, $type );
 
     if ( $cp_settings_user_role == 'all' ) :
 
@@ -1522,4 +1590,14 @@ function cp_get_options() {
 	}
 
 	return apply_filters( 'cp_get_options', $options, $saved_options );
+}
+
+//limit string length function
+function cp_limit_length( $strtolimit=null, $limit=50 ) {
+
+	if ( strlen( $strtolimit ) > $limit ) {
+		$strtolimit = substr( $strtolimit, 0, $limit ) .'...';
+	}
+
+	return $strtolimit;
 }

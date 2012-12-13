@@ -40,12 +40,14 @@ global $cp_page, $cp_bp_integration;
 </div>
 */ ?>
 
-<div class="cp-meta-box cp-edit-project hide-on-load">
-	<div title="Click to toggle" class="handlediv"><br></div>
-	<h4 class="hndle"><span><?php _e( 'Edit Project', 'collabpress' ) ?></span></h4>
-	
-	<div class="inside">
-		<?php $cp_page->cp_edit_project_meta() ?>
+
+<?php if ( cp_check_permissions( 'settings_user_role' ) ) : ?>	
+	<div class="cp-meta-box cp-edit-project hide-on-load">
+		<div title="Click to toggle" class="handlediv"><br></div>
+		<h4 class="hndle"><span><?php _e( 'Edit Project', 'collabpress' ) ?></span></h4>
+		
+		<div class="inside">
+			<?php $cp_page->cp_edit_project_meta() ?>
+		</div>
 	</div>
-</div>
-	
+<?php endif ?>	

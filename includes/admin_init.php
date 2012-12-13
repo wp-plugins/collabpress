@@ -3,8 +3,49 @@
 // Initialize CollabPress settings
 add_action( 'admin_init', 'cp_admin_init' );
 function cp_admin_init() {
+	
 	// Register CollabPress options
 	register_setting( 'cp_options_group', 'cp_options' );
+	
+	//add CP user capabilities to the built in accounts
+	global $wp_roles;
+
+	// add capabilities to Client user role
+	$wp_roles->add_cap( 'administrator', 'cp_add_projects' );
+	$wp_roles->add_cap( 'administrator', 'cp_edit_projects' );
+	$wp_roles->add_cap( 'administrator', 'cp_add_task_lists' );
+	$wp_roles->add_cap( 'administrator', 'cp_edit_task_lists' );
+	$wp_roles->add_cap( 'administrator', 'cp_add_task' );
+	$wp_roles->add_cap( 'administrator', 'cp_edit_task' );
+
+	$wp_roles->add_cap( 'editor', 'cp_add_projects' );
+	$wp_roles->add_cap( 'editor', 'cp_edit_projects' );
+	$wp_roles->add_cap( 'editor', 'cp_add_task_lists' );
+	$wp_roles->add_cap( 'editor', 'cp_edit_task_lists' );
+	$wp_roles->add_cap( 'editor', 'cp_add_task' );
+	$wp_roles->add_cap( 'editor', 'cp_edit_task' );
+	
+	$wp_roles->add_cap( 'author', 'cp_add_projects' );
+	$wp_roles->add_cap( 'author', 'cp_edit_projects' );
+	$wp_roles->add_cap( 'author', 'cp_add_task_lists' );
+	$wp_roles->add_cap( 'author', 'cp_edit_task_lists' );
+	$wp_roles->add_cap( 'author', 'cp_add_task' );
+	$wp_roles->add_cap( 'author', 'cp_edit_task' );
+	
+	$wp_roles->add_cap( 'contributor', 'cp_add_projects' );
+	$wp_roles->add_cap( 'contributor', 'cp_edit_projects' );
+	$wp_roles->add_cap( 'contributor', 'cp_add_task_lists' );
+	$wp_roles->add_cap( 'contributor', 'cp_edit_task_lists' );
+	$wp_roles->add_cap( 'contributor', 'cp_add_task' );
+	$wp_roles->add_cap( 'contributor', 'cp_edit_task' );
+	
+	$wp_roles->add_cap( 'subscriber', 'cp_add_projects' );
+	$wp_roles->add_cap( 'subscriber', 'cp_edit_projects' );
+	$wp_roles->add_cap( 'subscriber', 'cp_add_task_lists' );
+	$wp_roles->add_cap( 'subscriber', 'cp_edit_task_lists' );
+	$wp_roles->add_cap( 'subscriber', 'cp_add_task' );
+	$wp_roles->add_cap( 'subscriber', 'cp_edit_task' );
+	
 }
 
 // Add Translation
@@ -112,7 +153,8 @@ function collabpress_init() {
 							);
 	// Register CollabPress Meta Data
 	register_post_type( 'cp-meta-data', $args_tasks );
-
-	do_action( 'cp_registered_post_types' );
+	
+	// Let other plugins (and the BuddyPress compatibility module) know that we've registered
+	do_action( 'cp_registered_post_types' ); 
 
 }

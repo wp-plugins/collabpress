@@ -178,10 +178,11 @@ if ( cp_check_permissions( 'settings_user_role' ) ) {
                     <td valign="top"><?php echo '<input type="submit" name="cp_clear_activity" value="'.__('Delete Log', 'collabpress').'" class="button-secondary" onclick="javascript:check=confirm(\'' . __( 'WARNING: This will delete ALL activity logs.  Once logs have been deleted they can NOT be restored.\n\nChoose [Cancel] to Stop, [OK] to delete logs.\n', 'collabpress' ) .'\' );if(check==false) return false;" />';?></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><hr /></td>
+                    <td colspan="2"></td>
                 </tr>
             </table>
         </form>
+        <?php include "settings-addons.php";?>
     </div>
 
     <?php cp_footer(); ?>

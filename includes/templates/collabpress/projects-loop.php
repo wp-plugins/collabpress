@@ -107,11 +107,13 @@ $pagination->setup_query( $cp_bp_projects );
 
 <hr />
 
-<div class="cp-meta-box cp-new-project hide-on-load">
-	<div title="Click to toggle" class="handlediv"><br></div>
-	<h4 class="hndle"><span><?php _e( 'New Project', 'collabpress' ) ?></span></h4>
-
-	<div class="inside">
-		<?php cp_add_project() ?>
+<?php if ( cp_check_permissions( 'settings_user_role' ) ) : ?>	
+	<div class="cp-meta-box cp-new-project hide-on-load">
+		<div title="Click to toggle" class="handlediv"><br></div>
+		<h4 class="hndle"><span><?php _e( 'New Project', 'collabpress' ) ?></span></h4>
+	
+		<div class="inside">
+			<?php cp_add_project() ?>
+		</div>
 	</div>
-</div>
+<?php endif ?>

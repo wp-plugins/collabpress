@@ -23,6 +23,8 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 	var $maybe_group_id;
 	var $group_settings;
 	var $calendar_enable;
+	var $create_role;
+	var $edit_delete_role;
 
 	var $cp_link;
 	var $current_view;
@@ -62,6 +64,9 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 
 		// Grab the group settings for use throughout
 		$this->group_settings = groups_get_groupmeta( $this->maybe_group_id, 'collabpress' );
+		if ( empty( $this->group_settings ) ) {
+			$this->group_settings = array();
+		}
 
 		// Should we enable the group tab?
 		if ( !empty( $this->group_settings ) ) {
@@ -101,6 +106,10 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 
 		$this->nav_item_position = 31;
 
+		// Allow users to edit/delete items based on group settings
+		add_filter( 'cp_settings_user_role', array( &$this, 'has_cap_edit' ), 10, 2 );
+		add_filter( 'map_meta_cap', array( &$this, 'map_meta_cap' ), 10, 4 );
+
 		if ( bp_is_group() ) {
 			// Set up the group's CP link
 			$this->cp_link = bp_get_group_permalink( groups_get_current_group() ) . $this->slug;
@@ -116,6 +125,10 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 				// A less-than-ideal way to let the main CPBP class know we're done
 				do_action( 'cp_bp_setup_item' );
 			}
+
+			// Get the settings for create and edit/delete roles
+			$this->create_role = isset( $this->group_settings['create_role'] ) ? $this->group_settings['create_role'] : 'group-members';
+			$this->edit_delete_role = isset( $this->group_settings['edit_delete_role'] ) ? $this->group_settings['edit_delete_role'] : 'admins-mods-owners';
 
 			// Enable the calendar tab if necessary
 			$this->calendar_enable = !isset( $this->group_settings['calendar_enable'] ) || 'enabled' == $this->group_settings['calendar_enable'];
@@ -140,6 +153,162 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 		// Load the styles
 		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
 		$this->enqueue_scripts();
+	}
+
+	/**
+	 * There are some places in CP where permissions are checked against a cp_ cap. This
+	 * method adds a proper filter to map_meta_cap to alter the permissions for BP groups.
+	 *
+	 * @see self::has_cap_edit() for a second mechanism
+	 */
+	function map_meta_cap( $caps, $cap, $user_id, $args ) {
+
+		// Only mess with this stuff on the BP side
+		if ( !bp_is_group() ) {
+			return $caps;
+		}
+
+		switch ( $cap ) {
+			case 'cp_add_task_lists' :
+			case 'cp_edit_projects' :
+			case 'cp_add_task' :
+			case 'cp_edit_task_lists' :
+			case 'cp_edit_task' :
+
+				if ( isset( $this->group_settings['edit_delete_role'] ) && 'admins-mods-owners' == $this->group_settings['edit_delete_role'] ) {
+					if ( groups_is_user_admin( $user_id, bp_get_current_group_id() ) || groups_is_user_mod( $user_id, bp_get_current_group_id() ) ) {
+						$caps = array( 'exist' );
+					} else {
+						if ( 'cp_edit_task' == $cap ) {
+							// In the case of cp_edit_task, get_the_ID()
+							// does not reliably fetch the task's post // ID. So we get it manually, based on URL
+							$tasks_query = new WP_Query( array( 'name' => bp_action_variable( 2 ), 'post_type' => 'cp-tasks' ) );
+
+							if ( $tasks_query->have_posts() ) {
+								// The regular WP_Query loop doesn't
+								// work right?
+								$post_author = $tasks_query->post->post_author;
+							}
+						} else {
+							$post = get_post( get_the_ID() );
+							$post_author = isset( $post->post_author ) ? $post->post_author : 0;
+						}
+
+						if ( !empty( $post_author ) && $user_id == $post_author ) {
+							$caps = array( 'exist' );
+						} else {
+							$caps = array( 'do_not_allow' );
+						}
+					}
+
+				} else {
+					if ( groups_is_user_member( $user_id, bp_get_current_group_id() ) ) {
+						$caps = array( 'exist' );
+					} else {
+						$caps = array( 'do_now_allow' );
+					}
+				}
+
+				break;
+
+			case 'cp_add_projects' :
+				// In the case of cp_add_projects, there is no current project to
+				// check authorship against
+
+				if ( isset( $this->group_settings['edit_delete_role'] ) && 'admins-mods-owners' == $this->group_settings['edit_delete_role'] ) {
+					if ( groups_is_user_admin( $user_id, bp_get_current_group_id() ) || groups_is_user_mod( $user_id, bp_get_current_group_id() ) ) {
+						$caps = array( 'exist' );
+					} else {
+						$caps = array( 'do_not_exist' );
+					}
+				} else {
+					if ( groups_is_user_member( $user_id, bp_get_current_group_id() ) ) {
+						$caps = array( 'exist' );
+					} else {
+						$caps = array( 'do_now_allow' );
+					}
+				}
+
+				break;
+
+		}
+
+		return $caps;
+	}
+
+	/**
+	 * In some places in CP, cp_check_permissions() is used as a wrapper for current_user_can(),
+	 * which maps against a built-in user role rather than a custom cp_ cap. This method
+	 * requires a different kind of workaround from map_meta_cap() (above).
+	 */
+	function has_cap_edit( $retval, $type ) {
+
+		if ( bp_is_group() ) {
+			$edit_delete_role = isset( $this->group_settings['edit_delete_role'] ) ? $this->group_settings['edit_delete_role'] : '';
+			switch( $edit_delete_role ) {
+				case 'admins-mods-owners' :
+					// The way that CP handles redirects is inconsistent,
+					// so we do some manual checks to make sure a delete GET
+					// argument is for real
+					if ( isset( $_GET['cp-delete-task-id'] ) ) {
+						$maybe_item_id = $_GET['cp-delete-task-id'];
+					} else if ( isset( $_GET['cp-delete-task-list-id'] ) ) {
+						$maybe_item_id = $_GET['cp-delete-task-list-id'];
+					}
+
+					if ( !empty( $maybe_item_id ) ) {
+						$maybe_item = get_post( $maybe_item_id );
+
+						if ( isset( $maybe_item->post_status ) && 'trash' != $maybe_item->post_status ) {
+							$is_delete_attempt = true;
+						}
+					}
+
+					// Check to see whether this is the main project loop,
+					// in which case there's no item author
+					if ( !bp_action_variables() ) {
+						$is_project_list = true;
+					}
+
+					if ( isset( $_POST['cp-edit-task-id'] ) ) {
+						$item_id = $_POST['cp-edit-task-id'];
+						$item = get_post( $item_id );
+						$item_author = $item->post_author;
+					} else if ( isset( $_POST['cp-edit-task-list-id'] ) ) {
+						$item_id = $_POST['cp-edit-task-list-id'];
+						$item = get_post( $item_id );
+						$item_author = $item->post_author;
+					} else if ( isset( $_POST['cp-edit-project-id'] ) ) {
+						$item_id = $_POST['cp-edit-project-id'];
+						$item = get_post( $item_id );
+						$item_author = $item->post_author;
+					} else if ( !empty( $is_delete_attempt ) ) {
+						$item_author = $maybe_item->post_author;
+					} else if ( !empty( $is_project_list ) ) {
+						$item_author = 0;
+					} else {
+						$item_author = get_the_author_meta( 'ID' );
+					}
+
+					if ( groups_is_user_admin( bp_loggedin_user_id(), bp_get_current_group_id() ) || groups_is_user_mod( bp_loggedin_user_id(), bp_get_current_group_id() ) || $item_author == bp_loggedin_user_id() ) {
+						$retval = 'exist';
+					} else {
+						$retval = 'do_not_allow';
+					}
+					break;
+
+				case 'group-members' :
+					if ( groups_is_user_member( bp_loggedin_user_id(), bp_get_current_group_id() ) ) {
+						$retval = 'exist';
+					} else {
+						$retval = 'do_not_allow';
+					}
+
+					break;
+			}
+		}
+
+		return $retval;
 	}
 
 	/**
@@ -390,6 +559,32 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 			</table>
 		<?php endif ?>
 
+		<table class="group-collabpress-options" id="cp-settings">
+			<?php /* Not yet implemented */ /*
+			<tr>
+				<th scope="row"><label for="collabpress[create_role]"><?php _e( 'Who can create new items in this group?', 'collabpress' ); ?></label></th>
+
+				<td>
+					<select name="collabpress[create_role]">
+						<option value="group-members" <?php selected( $this->create_role, 'group-members' ) ?>><?php _e( 'Any group member', 'collabpress' ) ?></option>
+						<option value="admins-mods" <?php selected( $this->create_role, 'admins-mods' ) ?>><?php _e( 'Admins and mods only', 'collabpress' ) ?></option>
+					</select>
+				</td>
+			</tr>
+			*/ ?>
+
+			<tr>
+				<th scope="row"><label for="collabpress[edit_delete_role]"><?php _e( 'Who in this group can edit and delete existing items?', 'collabpress' ); ?></label></th>
+
+				<td>
+					<select name="collabpress[edit_delete_role]">
+						<option value="group-members" <?php selected( $this->edit_delete_role, 'group-members' ) ?>><?php _e( 'Any group member', 'collabpress' ) ?></option>
+						<option value="admins-mods-owners" <?php selected( $this->edit_delete_role, 'admins-mods-owners' ) ?>><?php _e( 'Admin, moderators, and owners only', 'collabpress' ) ?></option>
+					</select>
+				</td>
+			</tr>
+		</table>
+
 		<table class="group-collabpress-options" id="cp-calendar">
 			<tr>
 				<th scope="row"><label for="collabpress[calendar_enable]"><?php _e( 'Project Calendar Tab', 'collabpress' ); ?></label></th>
@@ -490,7 +685,15 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 	function widget_display() {}
 
 	function user_list_html( $html, $selected ) {
-		if ( bp_group_has_members( array( 'exclude_admins_mods' => false ) ) ) {
+		if ( bp_group_has_members( array(
+			'exclude_admins_mods' => false,
+			'per_page'	      => false,
+			'max'		      => false,
+		) ) ) {
+			global $members_template;
+
+			usort( $members_template->members, array( &$this, 'sort_by_display_name_cb' ) );
+
 			$html = '<select name="cp-task-assign" id="cp-task-assign">';
 			while ( bp_group_members() ) {
 				bp_group_the_member();
@@ -502,6 +705,14 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 			$html .= '</select>';
 		}
 		return $html;
+	}
+
+	function sort_by_display_name_cb( $a, $b ) {
+		if ( $a->display_name == $b->display_name ) {
+			return 0;
+		}
+
+		return strtolower( $a->display_name ) < strtolower( $b->display_name ) ? -1 : 1;
 	}
 
 	/**
@@ -591,7 +802,7 @@ class CP_BP_Group_Extension extends BP_Group_Extension {
 		// If so, get the group info and replace args
 		$terms = wp_get_post_terms( $item->ID, 'cp-bp-group' );
 
-		if ( !empty( $terms ) ) {
+		if ( !is_wp_error( $terms ) && !empty( $terms ) ) {
 			// Take the first term for now. Todo: figure this out
 			$term = $terms[0];
 			if ( bp_get_current_group_id() == $term->name ) {
