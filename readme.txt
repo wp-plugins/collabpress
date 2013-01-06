@@ -42,6 +42,7 @@ CollabPress is an Open Source project. If you are a developer, make sure to chec
 == Changelog ==
 
 = 1.2.3 =
+* Removed remaining Google Hosted jQuery
 * Show comments and comment form while viewing a task in BuddyPress on the front-end
 
 = 1.2.2 =
@@ -128,6 +129,7 @@ CollabPress is an Open Source project. If you are a developer, make sure to chec
 == Upgrade Notice ==
 
 = 1.2.3 =
+* Removed remaining Google Hosted jQuery
 * Show comments and comment form while viewing a task in BuddyPress on the front-end
 
 = 1.2.2 =
