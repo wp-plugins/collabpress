@@ -16,7 +16,7 @@
 		<div class="collabpress-project new">
 			<a href="#inline_content" class="add-new-project">
 				<div class="plus-sign">+</div>
-				<h2>Add new project</h2>
+				<h2><?php _e( 'Add new project', 'collabpress' ); ?></h2>
 			</a>
 		</div>
 		<?php } ?>
@@ -94,8 +94,13 @@
 
 	// Add new Project submit handler
 	$('.submit').click(function() {
+		var project_name = $('#cp-project').val();
+		if ( ! project_name ) {
+			alert( '<?php _e( 'Please enter a name for this project.', 'collabpress' ); ?>' );
+			return;
+		}
 		var data = {
-			project_name: $('#cp-project').val(),
+			project_name: project_name,
 			project_description: $('#cp-project-description').val(),
 			users: [],
 			group_id: <?php echo bp_get_current_group_id(); ?>,

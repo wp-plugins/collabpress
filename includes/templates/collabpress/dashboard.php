@@ -17,7 +17,7 @@
 		<div class="collabpress-project new">
 			<a href="#inline_content" class="add-new-project">
 				<div class="plus-sign">+</div>
-				<h2>Add new project</h2>
+				<h2><?php _e( 'Add new project', 'collabpress' ); ?></h2>
 			</a>
 		</div>
 		<?php } ?>
@@ -47,8 +47,8 @@
 							<th scope="row"><label for="cp-project-users"><?php _e( 'Users: ', 'collabpress' ) ?></label></th>
 							<td>
 							<p>
-								<input type="button" name="CheckAll" value="<?php _e( 'Check All', 'collabpress' ); ?>" onClick="checkAll(document.new_project_form['cp_project_users[]'])" />
-								<input type="button" name="UnCheckAll" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" onClick="uncheckAll(document.new_project_form['cp_project_users[]'])" />
+								<input type="button" name="CheckAll" class="check-all-users-button" value="<?php _e( 'Check All', 'collabpress' ); ?>" />
+								<input type="button" name="UnCheckAll" class="uncheck-all-users-button" value="<?php _e( 'Uncheck All', 'collabpress' ); ?>" />
 							</p>
 							<?php
 							//check if user is subscriber
@@ -93,8 +93,13 @@
 		);
 	});
 	$('.submit').click(function() {
+		var project_name = $('#cp-project').val();
+		if ( ! project_name ) {
+			alert( '<?php _e( 'Please enter a name for this project.', 'collabpress' ); ?>' );
+			return;
+		}
 		var data = {
-			project_name: $('#cp-project').val(),
+			project_name: project_name,
 			project_description: $('#cp-project-description').val(),
 			users: [],
 			collabpress_ajax_request_origin: '<?php echo ( is_admin() ? 'admin' : 'frontend' ); ?>',
@@ -116,6 +121,20 @@
 				window.location = response.data.redirect;
 			}
 		);
+	});
+
+	// Check all users on click
+	$('.check-all-users-button').click( function() {
+		$('.cp_project_user').each( function() {
+			jQuery(this).prop('checked', 'checked');
+		});
+	});
+
+	// Uncheck all users on click
+	$('.uncheck-all-users-button').click( function() {
+		$('.cp_project_user').each( function() {
+			jQuery(this).prop('checked', '');
+		});
 	});
 })(jQuery);
 </script>

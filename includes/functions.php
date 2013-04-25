@@ -222,13 +222,8 @@ function cp_draw_calendar( $args = array() ) {
 
 	echo '<div id="cp-calendar-wrap">';
 
-	if ( ! $month && ! isset( $_GET['day'] ) ) :
-		$month = date('n');
-		$year = date('Y');
-	else :
-		$month = absint($_GET['month']);
-		$year = absint($_GET['year']);
-	endif;
+	$month = ( ! empty( $_GET['month'] ) ) ? absint($_GET['month']) : $month = date( 'n' );
+	$year = ( ! empty( $_GET['year'] ) ) ? absint($_GET['year']) : $year = date( 'Y' );
 
 	$monthName= date("F",mktime(0,0,0,$month,1,2000));
 	echo '<h3 style="clear:both; text-align: center">'.$monthName.' - '.$year.'</h3>';
@@ -345,7 +340,7 @@ function cp_draw_calendar( $args = array() ) {
 				$task_status = get_post_meta( get_the_ID(), '_cp-task-status', true );
 
 				if ($task_status == 'open') :
-					$calendar .= '<p><a href="'.cp_get_task_permalink( get_the_ID() ).'">'.get_avatar($task_user_id, 32).' '.get_the_title().'</a></p>';
+					$calendar .= '<p><a href="' . get_permalink( get_the_ID() ) .'">' . get_avatar( $task_user_id, 32 ) . ' ' . get_the_title() . '</a></p>';
 				endif;
 
 		    endwhile;
@@ -410,7 +405,7 @@ function cp_get_calendar_permalink( $args = array() ) {
 	if ( $year )
 		$link = add_query_arg( array( 'year' => $year ), $link );
 
-	return $link;
+	return apply_filters( 'cp_calendar_permalink', $link, $project, $year, $month );
 }
 
 	function cp_calendar_permalink( $args = array() ) {
@@ -801,12 +796,7 @@ function cp_insert_project( $args ) {
 
 	$project_id = wp_insert_post( $args );
 
-	// Project description
-	update_post_meta(
-		$project_id,
-		'_cp-project-description',
-		esc_html( $project_description )
-	);
+	cp_set_project_description( $project_description );
 
 	// Project users
 	update_post_meta(
@@ -834,6 +824,14 @@ function cp_insert_project( $args ) {
 	do_action( 'cp_project_added', $project_id );
 
 	return $project_id;
+}
+
+function cp_set_project_description( $project_id, $description ) {
+	update_post_meta( $project_id, '_cp-project-description', esc_html( $description ) );
+}
+
+function cp_get_project_description( $project_id ) {
+	return get_post_meta( $project_id, '_cp-project-description', true );
 }
 
 function cp_add_user_to_project( $project_id, $user_id ) {
@@ -938,8 +936,8 @@ function cp_insert_task( $args = array() ) {
 		'task_list' => 0,
 		'send_email_notification' => true
 	);
-	$args = wp_parse_args( $args, $defaults );
 
+	$args = wp_parse_args( $args, $defaults );
 	extract( $args );
 	$task_id = wp_insert_post( $args );
 
@@ -986,10 +984,10 @@ function cp_insert_task( $args = array() ) {
 
 	do_action( 'cp_task_added', $task_id );
 
-	//check if email notification is checked, and a user is assigned to a project
+	// check if email notification is checked, and a user is assigned to a project
 	if( $send_email_notification && $task_assigned_to ) {
 
-	    //send email
+	    // send email
 	    $task_author_data = get_userdata( $task_assigned_to );
 	    $author_email = $task_author_data->user_email;
 
@@ -1304,7 +1302,7 @@ function cp_output_project_nested_task_lists_and_tasks_html_for_sort( $project_i
 			<dl class="menu-item-bar">
 				<dt class="menu-item-handle">
 					<?php if ( $item->post_type == 'cp-tasks' ) : ?>
-					<input type="hidden" id="item-complete-status-change-<?php echo $item_id; ?>" value="<?php echo wp_create_nonce( 'item-complete-status-change_' . $item_id ) ?>" />
+					<input type="hidden" id="item-complete-status-change-nonce_<?php echo $item_id; ?>" value="<?php echo wp_create_nonce( 'item-complete-status-change_' . $item_id ) ?>" />
 					<input class="item-completed" type="checkbox" <?php checked( 'complete', $task_status ); ?> />
 					<?php endif; ?>
 					<span class="item-title">

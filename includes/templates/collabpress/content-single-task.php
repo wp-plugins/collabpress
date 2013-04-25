@@ -6,6 +6,7 @@
 		<?php cp_project_title(); ?>
 		<?php $task_status = cp_get_task_status( cp_get_the_task_ID() ); ?>
 		<?php $title_class = $task_status; ?>
+		<input type="hidden" id="item-complete-status-change-nonce_<?php echo cp_get_task_id(); ?>" value="<?php echo wp_create_nonce( 'item-complete-status-change_' . cp_get_task_id() ) ?>" />
 		<h1 id="task-title" class="<?php echo $title_class; ?>"><input id="item-completed" type="checkbox" <?php checked( 'complete', $task_status ); ?>><?php echo cp_get_task_title(); ?></h1>
 		<a class="edit-task" href="#edit_task_inline_content">Edit</a><BR>
 		<?php if ( $due_date = cp_get_the_task_due_date() ) {
@@ -24,7 +25,7 @@
 	<div style='display:none'>
 		<div id='edit_task_inline_content' style='padding:10px; background:#fff;'>
 			<form id="edit-task-form">
-				<h2>Edit Task</h2>
+				<h2><?php _e( 'Edit Task', 'collabpress' ); ?></h2>
 				<input type="hidden" id="edit_task_nonce" value="<?php echo wp_create_nonce( 'edit-task' ); ?>" />
 				<input type="hidden" id="cp-project-id" value="<?php echo cp_get_project_id() ?>" />
 				<input type="hidden" id="cp-task-id" value="<?php echo cp_get_task_id() ?>" />
@@ -62,23 +63,14 @@
 							<th scope="row"><label for="cp-task-priority"><?php _e('Priority: ', 'collabpress') ?></label></th>
 							<td>
 								<select name="cp-task-priority" id="cp-task-priority">
-									<option <?php selected(cp_get_the_task_priority(), 'Urgent' ); ?> value="Urgent">Urgent</option>
-									<option <?php selected(cp_get_the_task_priority(), 'High' ); ?> value="High">High</option>
-									<option <?php selected(cp_get_the_task_priority(), 'Normal' ); ?> value="Normal">Normal</option>
-									<option <?php selected(cp_get_the_task_priority(), 'Low' ); ?> value="Low">Low</option>
-									<option <?php selected(cp_get_the_task_priority(), 'Very Low' ); ?> value="Very Low">Very Low</option>
-									<option <?php selected(cp_get_the_task_priority(), 'None' ); ?> value="None" selected="selected">None</option>
+									<option <?php selected(cp_get_the_task_priority(), 'Urgent' ); ?> value="Urgent"><?php _e( 'Urgent', 'collabpress' ); ?></option>
+									<option <?php selected(cp_get_the_task_priority(), 'High' ); ?> value="High"><?php _e( 'High', 'collabpress' ); ?></option>
+									<option <?php selected(cp_get_the_task_priority(), 'Normal' ); ?> value="Normal"><?php _e( 'Normal', 'collabpress' ); ?></option>
+									<option <?php selected(cp_get_the_task_priority(), 'Low' ); ?> value="Low"><?php _e( 'Low', 'collabpress' ); ?></option>
+									<option <?php selected(cp_get_the_task_priority(), 'Very Low' ); ?> value="Very Low"><?php _e( 'Very Low', 'collabpress' ); ?></option>
+									<option <?php selected(cp_get_the_task_priority(), 'None' ); ?> value="None" selected="selected"><?php _e( 'None', 'collabpress' ); ?></option>
 								</select>
 							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><label for="cp-task-due"><?php _e('Notify via Email? ', 'collabpress') ?></label></th>
-							<?php
-							//check if email option is enabled
-							$options = get_option('cp_options');
-							$checked = ( $options['email_notifications'] == 'enabled' ) ? 'checked="checked"' : null;
-							?>
-							<td align="left"><p><input name="notify" id="notify" type="checkbox" <?php echo $checked; ?> /></p></td>
 						</tr>
 					</tbody>
 				</table>
@@ -97,11 +89,14 @@
 
 		// Handle checkbox change for a task
 		$('#item-completed').change( function(event) {
+			var task_id = $('#cp-task-id').val();
 			var data = {
-				task_id: $('#cp-task-id').val(),
+				task_id: task_id,
 				task_status: ( $(this).is(':checked') ? 'complete' : 'open' ),
 				collabpress_ajax_request_origin: '<?php echo ( is_admin() ? 'admin' : 'frontend' ); ?>',
 			};
+			var nonce = jQuery( '#item-complete-status-change-nonce_' + task_id ).val();
+
 			if ( $(this).is(':checked') )
 				$('#task-title').css('text-decoration', 'line-through' );
 			else
@@ -110,7 +105,8 @@
 				ajaxurl,
 				{
 					action: 'cp_update_task_status',
-					data: data
+					data: data,
+					nonce: nonce
 				}, function( response ) { }
 			);
 		});
@@ -130,7 +126,6 @@
 				post_title: $('#cp-task').val(),
 				task_assigned_to: $('#cp-task-assign').val(),
 				priority: $('#cp-task-priority').val(),
-				send_email_notification: $('#notify').is(':checked'),
 				task_due_date: $('#cp-task-due-date').val(),
 				collabpress_ajax_request_origin: '<?php echo ( is_admin() ? 'admin' : 'frontend' ); ?>'
 			};
@@ -168,33 +163,33 @@
 			);
 			return false;
 		});
-	});
 
-	// On comment delete click send AJAX request
-	$('.delete-comment-link').click( function() {
+		// On comment delete click send AJAX request
+		$('.delete-comment-link').click( function() {
 
-		if ( window.confirm( '<?php _e( 'Are you sure you want to delete this comment?', 'collabpress' ); ?>' ) ) {
-			var that = this;
+			if ( window.confirm( '<?php _e( 'Are you sure you want to delete this comment?', 'collabpress' ); ?>' ) ) {
+				var that = this;
 
-			var comment_id = $(this).data('comment-id'),
-				data = {
-					comment_id: comment_id,
-					collabpress_ajax_request_origin: '<?php echo ( is_admin() ? 'admin' : 'frontend' ); ?>'
-				},
-				nonce = jQuery( '#delete_comment_nonce_' + comment_id ).val();
+				var comment_id = $(this).data('comment-id'),
+					data = {
+						comment_id: comment_id,
+						collabpress_ajax_request_origin: '<?php echo ( is_admin() ? 'admin' : 'frontend' ); ?>'
+					},
+					nonce = jQuery( '#delete_comment_nonce_' + comment_id ).val();
 
-			$.post(
-				ajaxurl,
-				{
-					action: 'cp_delete_comment',
-					data: data,
-					nonce: nonce
-				}, function( response ) {
-					if ( response.success )
-						jQuery(that).parents('.cp_task_comment').hide();
-				}
-			);
-		}
+				$.post(
+					ajaxurl,
+					{
+						action: 'cp_delete_comment',
+						data: data,
+						nonce: nonce
+					}, function( response ) {
+						if ( response.success )
+							jQuery(that).parents('.cp_task_comment').hide();
+					}
+				);
+			}
+		});
 	});
 })(jQuery);
 </script>
